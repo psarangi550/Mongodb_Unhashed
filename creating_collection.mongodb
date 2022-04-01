@@ -1,0 +1,22 @@
+show dbs //displaying the database
+use mynewdb;// using the logical database
+db //displaying which logical database we are in
+//creating a JSON document with collection Students and inserting the document 
+db.Students.insertOne({
+    name:"pratik",
+    rollno : 101,
+    marks :98
+})
+//creating a JSON document with collection Students and inserting the document 
+db.Students.insert({
+    name:"rika",
+    rollno : 102,
+    marks :99
+})
+
+//displaying the collection
+show collections;
+//displaying the documents in the collection 
+db.Students.find().pretty();
+//droping the database after the work done
+db.DropDatabase
