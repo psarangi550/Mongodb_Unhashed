@@ -1,0 +1,40 @@
+use ('appliance');
+
+
+a=({
+    aid:1,
+    aname:'Iron',
+    power:1000,
+    weight:15,
+})
+
+b={     aid:2,
+        aname:'Fan',
+        power:1000,
+        sweep:12,
+        rmp:5000,
+        weight:15,
+    }
+
+db.createCollection('stores')
+
+db.appliance.insert({
+        aid:1,
+        aname:'Iron',
+        power:1000,
+        weight:15,
+    });
+
+db.appliance.insertOne({     
+        aid:2,
+        aname:'Fan',
+        power:1000,
+        sweep:12,
+        rmp:5000,
+        weight:15,
+    })
+
+db.appliance.find().pretty();
+show collection
+
+db.stores.insertOne(a)

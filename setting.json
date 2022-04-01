@@ -1,0 +1,1 @@
+{ "instantMongo": { "connections": [{ "name": "New Database Connection", "uri": "mongodb+srv://pratik:pratik123@cluster0.yoos2.mongodb.net/test" }] } }
