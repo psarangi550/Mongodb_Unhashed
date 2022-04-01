@@ -1,0 +1,123 @@
+//various way of inserting the document into the collections
+use("company")
+//switching the database
+use("newdb")
+//displaying the collections
+show collections
+//creating a list of JSON document
+var individual =[{
+                  _id:101,
+                  ename:"pratik",
+                  sal:5000,
+                  job:"IT",
+                  deptno:10 
+              },
+              {
+                  _id:102,
+                  ename:"rika",
+                  sal:10000,
+                  job:"DESIGN",
+                  deptno:20 
+              }
+]
+//adding to the implicit collections
+db.employee.insert(individual);
+//displaying the collections
+show collections
+//fetching the documents from the collections
+db.employee.find()
+//alternate way to insert the JSON document to collections
+db.employee.insert([
+            {
+                  _id:103,
+                  ename:"Abi",
+                  sal:15000,
+                  job:"INTERIOR",
+                  deptno:30 
+              },
+              {
+                  _id:104,
+                  ename:"gundu",
+                  sal:10000,
+                  job:"ID",
+                  deptno:20 
+              }
+])
+//displaying the documents in the collection employee
+db.employee.find()
+//creating individual JSON document variable 
+x ={
+                  _id:105,
+                  ename:"priya",
+                  sal:15000,
+                  job:"Testing",
+                  deptno:10 
+}
+//creating individual JSON document variable 
+y={
+              _id:106,
+                  ename:"rohith",
+                  sal:20000,
+                  job:"Development",
+                  deptno:20 
+
+}
+//creating individual JSON document variable 
+z={
+              _id:107,
+                  ename:"naju",
+                  sal:25000,
+                  job:"ID",
+                  deptno:30 
+}
+//inserting the value into the collection 
+db.employee.insert([x,y,z]);
+db.employee.find()//fetching the documents in the collections 
+//saving the JSON document to a variable 
+var a={
+                  _id:108,
+                  ename:"pupuli",
+                  sal:235000,
+                  job:"MS",
+                  deptno:10 
+}
+//inserting the docs using the insertOne method
+db.employee.insertOne(a);
+//creating the list of JSON documents
+let b=[
+  {
+            _id:109,
+            ename:"papali",
+            sal:45000,
+            job:"IT",
+            deptno:10 
+  },
+  {
+            _id:110,
+            ename:"puja",
+            sal:55000,
+            job:"BANKING",
+            deptno:10 
+  }
+]
+//using the insertMany option to add the documents to the collections 
+db.employee.insertMany(b);
+//alternate way of using the insertMany option
+db.employee.insertMany(
+  [
+    {
+        _id:111,
+            ename:"Manoj",
+            sal:55000,
+            job:"DEVOPS",
+            deptno:30 
+    },
+    {
+            _id:112,
+            ename:"Gundu",
+            sal:65000,
+            job:"3D MAX DESIGNER",
+            deptno:30 
+    }
+  ]
+)
