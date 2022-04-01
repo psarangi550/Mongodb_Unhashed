@@ -19,4 +19,4 @@ show collections;
 //displaying the documents in the collection 
 db.Students.find().pretty();
 //droping the database after the work done
-db.DropDatabase
+db.dropDatabase()
