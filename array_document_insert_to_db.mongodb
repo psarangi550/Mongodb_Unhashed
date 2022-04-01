@@ -1,0 +1,27 @@
+//switching to the newdb database
+use("newdb")
+//fetching all the collection availble in the database
+show collections;
+//fetching all the documents in the collections 
+db.employee.find().pretty()
+//creating an array without using var/let/const
+arr =[
+      {
+        _id:113,
+        ename:"lavanya",
+        sal:350000,
+        job:"MS",
+        deptno:30
+      },
+      {
+        _id:114,
+        ename:"Jeevan",
+        sal:450000,
+        job:"IT",
+        deptno:10
+      }
+]
+//adding the JSON document variable to the collections
+db.employee.insert(arr);
+//Fetching the details after adding the value 
+db.employee.find().pretty();
