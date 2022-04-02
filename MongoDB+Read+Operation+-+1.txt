@@ -1,0 +1,135 @@
+=========================MongoDB Read Operation - 1===================================
+
+Switch database COMPANY and create collection EMPLOYEE
+--------------------------------------------------------------------------------------
+use company
+db.createCollection("employee")
+
+Populating the collection EMPLOYEE with required data
+--------------------------------------------------------------------------------------
+db.employee.insertMany([{_id : 1,
+                         name : "Peter",
+                         job : "clerk",
+                         salary : 1200,
+                         dept : "research"},
+                        {_id : 2,
+                         name : "TURNER",
+                         job : "salesman",
+                         salary : 1500,
+                         comm : 200,
+                         dept : "sales"},
+                        {_id : 3,
+                         name : "Allen",
+                         job : "manager",
+                         salary : 4000,
+                         travel : 850,
+                         dept : "sales"},
+                        {_id : 4,
+                         name : "Miller",
+                         job : "analyst",
+                         salary : 3000,
+                         overtime : 500,
+                         medical : 700,
+                         dept : "research"},
+                        {_id : 5,
+                         name : "King",
+                         job : "manager",
+                         salary : 5000,
+                         travel : 1200,
+                         dept : "research"},
+                        {_id : 6,
+                         name : "Smith",
+                         job : "clerk",
+                         salary : 900,
+                         travel : 200,
+                         medical : 400,
+                         dept : "accounts"},
+                        {_id : 7,
+                         name : "Ford",
+                         job : "manager",
+                         salary : 3000,
+                         medical : 800,
+                         travel : 1200,
+                         dept : "accounts"},
+                        {_id : 8,
+                         name : "Jones",
+                         job : "clerk",
+                         salary : 700,
+                         medical : 500,
+                         dept : "accounts"}])
+
+To query entire collection (all the documents)
+-------------------------------------------------------------------------------------
+db.<collection>.find({})
+db.employee.find({})
+db.employee.find()
+
+
+To specify an equality condition use <key> : <value> in query filter
+-------------------------------------------------------------------------------------
+db.<collection>.find({<key> : <value>})
+db.employee.find({job : "manager"})
+
+
+To specify an operator like IN (SQL) ~ $IN (MongoDB)
+-------------------------------------------------------------------------------------
+db.<collection>.find({<field> : {$in :[v1, v2,...,vn]}})
+db.employee.find({name : {$in : ["Peter", "Allen", "Smith"]}})
+
+
+To specify an operator like NOT IN (SQL) ~ $NIN (MongoDB)
+-------------------------------------------------------------------------------------
+db.<collection>.find({<field> : {$nin :[v1, v2,...,vn]}})
+db.employee.find({name : {$nin : ["Peter", "Allen", "Smith"]}})
+
+
+To specify $OR operator
+------------------------------------------------------------------------------------
+db.<collection>.find({$or : [{<key> : <value>}, {<key> : <value>},...]})
+db.employee.find({$or : [{dept : "research"}, {dept : "sales"}]})
+db.employee.find({$or : [{name :"Peter"}, {job : "manager"}]})
+db.employee.find({$or : [{salary :{$lt : 1000}}, {travel : {$gt : 900}}]})
+
+
+To specify $NOR operator
+------------------------------------------------------------------------------------
+db.<collection>.find({$nor :[{<k1> : v1}, {<k2> : v2},...]}})
+db.employee.find({$nor : [{name : "Peter"}, {name : "Allen"}, {name : "Smith"}]})
+db.employee.find({$nor : [{travel :{$gt : 1300}}, {medical :{$gt : 600}}]})
+
+Analysis of the above $NOR operator
+------------------------------------------------------------------------------------
+1. In first case $nor worked same as $nin ~ NOT IN
+2. In second case -
+   a. Result contains documents with both travel and medical field
+      travel < 1300 AND medical < 600 [ Smith - travel = 200, medical = 400]
+   b. Result contains documents with both travel and medical fields
+      are not present [Peter and Turner]
+   c. Result contains documents with only travel field with travel < 1300 
+      [Allen - travel = 850, King - travel = 1200]
+   d. Result contains documents with only medical field with medical < 600
+      [Jones - medical = 500]
+   e. Result DOES NOT contain documents with both travel and medical field where
+      one of either travel or medical does not satisfy the given condition
+      [Ford - Medical = 800 (violation), travel = 1200]
+
+Equivalent of AND operator
+------------------------------------------------------------------------------------
+db.<collection>.find({<condition1>, <condition2>}, ...) conditions separated by ,
+db.employee.find({job : "manager", salary :{$gt : 3500}})
+
+
+Equivalent of AND and OR operator together
+------------------------------------------------------------------------------------
+1. List managers with salary > 3500 and all the clerks
+db.employee.find({$or : [{job : "manager", salary : {$gt : 3500}}, {job : "clerk"}]})
+
+2. List managers with salary > 3500 and clerks with salary < 1000
+db.employee.find({$or : [{job : "manager", salary : {$gt : 3500}}, 
+                         {job : "clerk", salary : {$lt : 1000}}]})
+
+3. List managers from sales and research departments
+db.employee.find({job : "manager", $or : [{dept : "sales"}, {dept : "research"}]})
+
+same problem solved with $in operator
+db.employee.find({job : "manager", dept : {$in :["sales", "research"]}})

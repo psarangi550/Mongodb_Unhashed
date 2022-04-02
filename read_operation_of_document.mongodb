@@ -1,0 +1,106 @@
+use("company")
+db.createCollection("employee");
+db.employee.insertMany(
+  [{                     _id : 1,
+                         name : "Peter",
+                         job : "clerk",
+                         salary : 1200,
+                         dept : "research"
+                         },
+                        {
+                          _id : 2,
+                         name : "TURNER",
+                         job : "salesman",
+                         salary : 1500,
+                         comm : 200,
+                         dept : "sales"
+                         },
+                        {
+                          _id : 3,
+                         name : "Allen",
+                         job : "manager",
+                         salary : 4000,
+                         travel : 850,
+                         dept : "sales"
+                         },
+                        {
+                          _id : 4,
+                         name : "Miller",
+                         job : "analyst",
+                         salary : 3000,
+                         overtime : 500,
+                         medical : 700,
+                         dept : "research"
+                         },
+                        {
+                          _id : 5,
+                         name : "King",
+                         job : "manager",
+                         salary : 5000,
+                         travel : 1200,
+                         dept : "research"
+                         },
+                        {
+                          _id : 6,
+                         name : "Smith",
+                         job : "clerk",
+                         salary : 900,
+                         travel : 200,
+                         medical : 400,
+                         dept : "accounts"
+                         },
+                        {
+                          _id : 7,
+                         name : "Ford",
+                         job : "manager",
+                         salary : 3000,
+                         medical : 800,
+                         travel : 1200,
+                         dept : "accounts"
+                         },
+                        {
+                          _id : 8,
+                         name : "Jones",
+                         job : "clerk",
+                         salary : 700,
+                         medical : 500,
+                         dept : "accounts"
+                         }
+                         ]
+)
+
+//fetching the value of all the documents in the collection
+db.employee.find({});
+//fetching a paticular key value from the JSON document in the collection
+db.employee.find({name:"Jones"});//fetching only ja,es record then 
+//fetching based on greater than and less than symbol then
+db.employee.find({salary:{$lt: 1000}}); //fetchign the less than symbol
+db.employee.find({salary:{$gt: 1000}}); //fetching the greater than symbol
+//using the in operator to fetch a list of key and values from the JSON document in the collection
+db.employee.find({job:{$in:["clerk","manager","analyst"]}})
+//using the in operator with less than and greater than operator 
+db.employee.find({salary:{$in:[1000,3000]}})
+//using the nin to find the value which does not belong to the list as 
+db.employee.find({salary:{$nin:[1000,3000]}})
+//checking the employee who does not belong to job category of clerk/manager/analyst
+db.employee.find({job:{$nin:["clerk","manager","analyst"]}})
+//usage of the or operator normally
+db.employee.find({$or:[{name:"Ford"},{dept:"research"}]})
+//using the or operator to list out the salary >2000 and less than<3000
+db.employee.find({$or:[{salary:{$gt:2000}},{job:"clerk"}]})
+//using the nor operator in here to fetch where or condition does not match 
+db.employee.find({$nor:[{name:"Ford"},{dept:"research"}]})
+//using the nor to fetch the salary<2000 and medical>500
+db.employee.find({$nor:[{salary:{$gt:2000}},{medical:{$gt:500}}]})
+//usage of and operator 
+db.employee.find({job:"manager",salary:{$gt:3000}})
+//here we are using the lte and gte which stands for less than equal to and greater than equal to 
+db.employee.find({job:"clerk",salary:{$lte:3000}})
+//1. List managers with salary > 3500 and all the clerks
+db.employee.find({$or:[{job:"manager",salary:{$gt:3500}},{job:"clerk"}]})
+//2.List managers with salary > 3500 and clerks with salary < 1000
+db.employee.find({$or:[{job:"manager",salary:{$gt:3500}},{job:"clerk",salary:{$lt:1000}}]})
+//3.List managers from sales and research departments
+db.employee.find({job:"manager",$or:[{dept:"sales"},{dept:"research"}]})
+//4.perforning the same operatopn with in operator 
+db.employee.find({job:"manager",dept:{$in:["sales","research"]}})
