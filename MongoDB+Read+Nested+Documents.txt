@@ -1,0 +1,159 @@
+=======================MongoDB Read Nested Documents===========================
+
+What is a Nested Document?
+-------------------------------------------------------------------------------
+1. A JSON document is embeded within a JSON document is called as 
+   Nested Document.
+2. A Nested Document allows a multifield key of a document to be embedded as
+   Nested Document
+
+Collection EMPLOYEE with nested document SALARY
+-------------------------------------------------------------------------------
+db.employee.insertMany([{_id : 1,
+                         name : "Peter",
+                         job : "clerk",
+                         salary : {basic : 900,
+                                   dapct : 70,
+                                   travel : 250,
+                                   health : 300},
+                         dept : "research"},
+                        {_id : 2,
+                         name : "Turner",
+                         job : "salesman",
+                         salary : {basic : 1000,
+                                   dapct : 60,
+                                   travel : 500,
+                                   health : 400,
+                                   comm : 200},
+                         dept : "sales"},
+                        {_id : 3,
+                         name : "Allen",
+                         job : "manager",
+                         salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 850,
+                                   health : 500,
+                                   house : 900},
+                         dept : "sales"},
+                        {_id : 4,
+                         name : "Miller",
+                         job : "analyst",
+                         salary : {basic : 2500,
+                                   dapct : 85,
+                                   health : 400,
+                                   overtime : 500,
+                                   house : 800},
+                         medical : 700,
+                         dept : "research"},
+                        {_id : 5,
+                         name : "King",
+                         job : "manager",
+                        salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 850,
+                                   health : 500,
+                                   house : 900},
+                         dept : "research"},
+                        {_id : 6,
+                         name : "Smith",
+                         job : "clerk",
+                         salary : {basic : 900,
+                                   dapct : 70,
+                                   travel : 200,
+                                   health : 400},
+                         dept : "accounts"},
+                        {_id : 7,
+                         name : "Ford",
+                         job : "manager",
+                         salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 750,
+                                   health : 400,
+                                   house : 800},
+                         dept : "accounts"},
+                        {_id : 8,
+                         name : "Jones",
+                         job : "clerk",
+                         salary : {basic : 800,
+                                   dapct : 70,
+                                   travel : 150,
+                                   health : 300},
+                         dept : "accounts"}])
+
+
+Query based on equality with a complete nested document
+----------------------------------------------------------------------------------------
+1. list employees with salary consisting of basic = 3000, dapct = 90
+   travel = 850, health = 500 and house = 900
+
+db.employee.find({salary :{basic : 3000,dapct : 90,travel : 850,health : 500,house : 900}})
+Result : [Allen, King]
+
+Query based on equality with a complete nested document must have same order and values
+-----------------------------------------------------------------------------------------
+db.employee.find({salary :{basic : 3000,dapct : 90,health : 500,travel : 850,house : 900}})
+Result : [None | order of keys changed though values are same]
+
+Query based on equality match on a field of embedded document
+-----------------------------------------------------------------------------------------
+2. list employees with basic eqluals to 800
+
+db.employee.find({"salary.basic" : 800})
+Result : [Jones]
+
+Query based on non-equality match on a field of embedded document
+-----------------------------------------------------------------------------------------
+3. list employees with basic less than or equals to 1000
+
+db.employee.find({"salary.basic" : {$lte : 1000}}) [$lte is less than or equals to <=]
+                                                   [$gte is greater than or equals >=]
+Result : [Peter, Turner, Smith, Jones]
+
+
+Query based on “$in” operator on field value of nested document
+-----------------------------------------------------------------------------------------
+4. list employees with da percentage is 60 or 70
+
+db.employee.find({"salary.dapct" : {$in : [60, 70]}})
+Result : [Peter, Turner, Smith, Jones]
+
+
+Query based on an “and” condition on field values of nested document
+-----------------------------------------------------------------------------------------
+5. list employees with basic less than 900 and travel allowance less than 200
+ 
+db.employee.find({"salary.basic" :{$lt : 900}, "salary.travel" :{$lt : 200}})
+Result : [Jones]
+
+
+“or” condition on field value involving document attribute with nested document attribute
+------------------------------------------------------------------------------------------
+6. list employees with basic less than 900 and all the managers
+
+db.employee.find({$or : [{"salary.basic" : {$lt : 900}}, {job : "manager"}]})
+Result : [Allen, King, Ford, Jones]
+
+
+“and” condition on field value involving document attribute with nested document attribute
+-------------------------------------------------------------------------------------------
+7. list documents of manager with travel allowance less than 800
+
+db.employee.find({job : "manager", "salary.travel" : {$lt : 800}})
+Result : [Ford]
+
+
+listing distinct jobs from the collection [job is document attribute]
+------------------------------------------------------------------------------------------
+8. list all the different jobs of employees
+
+db.employee.distinct("job")
+Result : [Analyst, Clerk, Manager, Salesman]
+
+
+listing distinct figures of basic from the collection [basic is nested document attribute]
+-------------------------------------------------------------------------------------------
+9. list all the different basic salary figures
+
+db.employee.distinct("salary.basic")
+Result : [800, 900, 1000, 2500, 3000]
+

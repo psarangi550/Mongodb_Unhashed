@@ -1,0 +1,119 @@
+//NESTING IN MONGODB
+//using the databse company
+use("company")
+//dropping the old collection employee
+db.employee.drop();
+//checking whether the collection been present or not 
+show collections;
+//creating it once again for the nesting case
+db.createCollection("employee");
+//now inserting the nested documents into the collections
+db.employee.insertMany(
+  [                     {_id : 1,
+                         name : "Peter",
+                         job : "clerk",
+                         salary : {basic : 900,
+                                   dapct : 70,
+                                   travel : 250,
+                                   health : 300},
+                         dept : "research"},
+                        {_id : 2,
+                         name : "Turner",
+                         job : "salesman",
+                         salary : {basic : 1000,
+                                   dapct : 60,
+                                   travel : 500,
+                                   health : 400,
+                                   comm : 200},
+                         dept : "sales"},
+                        {_id : 3,
+                         name : "Allen",
+                         job : "manager",
+                         salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 850,
+                                   health : 500,
+                                   house : 900},
+                         dept : "sales"},
+                        {_id : 4,
+                         name : "Miller",
+                         job : "analyst",
+                         salary : {basic : 2500,
+                                   dapct : 85,
+                                   health : 400,
+                                   overtime : 500,
+                                   house : 800},
+                         medical : 700,
+                         dept : "research"},
+                        {_id : 5,
+                         name : "King",
+                         job : "manager",
+                        salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 850,
+                                   health : 500,
+                                   house : 900},
+                         dept : "research"},
+                        {_id : 6,
+                         name : "Smith",
+                         job : "clerk",
+                         salary : {basic : 900,
+                                   dapct : 70,
+                                   travel : 200,
+                                   health : 400},
+                         dept : "accounts"},
+                        {_id : 7,
+                         name : "Ford",
+                         job : "manager",
+                         salary : {basic : 3000,
+                                   dapct : 90,
+                                   travel : 750,
+                                   health : 400,
+                                   house : 800},
+                         dept : "accounts"},
+                        {_id : 8,
+                         name : "Jones",
+                         job : "clerk",
+                         salary : {basic : 800,
+                                   dapct : 70,
+                                   travel : 150,
+                                   health : 300},
+                         dept : "accounts"}]
+)
+// querying for the salasy whose basic is 3000 and daily allowance is 90 
+//travel is 750,health is 400,house is 800
+db.employee.find({salary:{basic:3000,dapct:90,travel:750,health:400,house:800}})
+//chinging the order--we can see the no output we are chaning the order
+db.employee.find({salary:{basic:3000,dapct:90,travel:750,house:800,health:400}})
+//checking for the individual value 
+db.employee.find({"salary.basic":3000})//here we must have to provide quotes
+//remember that for the nested document query with the quotes value 
+//using the $lt/$gt/$lte/$gte/$eq/$ne inside the value 
+db.employee.find({"salary.basic":{$gt:800}})
+db.employee.find({"salary.basic":{$gte:800}})
+db.employee.find({"salary.basic":{$lt:1000}})
+db.employee.find({"salary.basic":{$lte:1000}})
+//using the in operator with the nested documents
+db.employee.find({"salary.travel":{$in:[850,200]}})
+//using the or  operator by 
+db.employee.find({$or:[{"salary.basic":3000},{"salary.basic":800}]})
+//basic less than 900 and all manager i.e all manager or basic less than 900
+//here the or operator between nested document and main document i.e parent document
+db.employee.find({$or:[{"salary.basic":{$lt:900}},{job:"manager"}]})
+//using the and operator as using the comma separeated value as
+db.employee.find({"salary.basic":3000,"salary.travel":850})
+//using the and operator along with the travel value as less than 750
+db.employee.find({"salary.basic":3000,"salary.travel":{$lt:850}})
+//listing the employee whose salary is basic < 900 and allowance < 200
+db.employee.find({"salary.basic":{$lt:900},"salary.dapct":{$lt:200}}) 
+//all the manager only whose salary in travel is less than 800
+//here the and operator between nested document and main document i.e parent document
+db.employee.find({job:"manager","salary.travel":{$lt:800}})
+//usage of dictinct function()
+//this will help in fetch the distinct document present in salary for each main document
+db.employee.distinct("salary")
+db.employee.distinct("job")
+db.employee.distinct("dept")
+//fetchign the dictinct value for the nested collection
+db.employee.distinct("dept")
+db.employee.distinct("salary.travel")
