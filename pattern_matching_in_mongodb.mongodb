@@ -1,0 +1,35 @@
+//PATTERN MATCHING IN MONGODB
+//using the database called comaony
+use("company");
+//listing the collections in the database
+show collections;
+//fetching all the documents in the collections
+db.employee.find({});
+//fetching the value "ll" present in the document or not 
+db.employee.find({name:/ll/})//fetching the value being present or not
+//using the and operator by comma to fetch multiple pattern in the collection inside the document
+db.employee.find({name:/ll/,job:/^ma/})
+//using the in operator to fetch the value 
+db.employee.find({name:{$in:[/ll/,/^Mi/]}});
+//using the or opertor to match multiple pattern 
+db.employee.find({$or:[{name:/ll/},{job:/^ma/}]})
+//fetching the value at the end of the name key inside the document of the collection 
+db.employee.find({name:/er$/})
+//fetching the value present in the starting of the collection
+db.employee.find({name:/^Pe/})
+//fetching the value at the starting and ignoring the cases 
+db.employee.find({name:/^pe/i})
+//using the $regex mehtod the implement the same with options as ignoring the cases
+db.employee.find({name:{$regex:"ll",$options:"i"}})
+//also alternate solution to the end of the sentence with $ symbol
+db.employee.find({name:{$regex:"ER$"}})
+//using the  regex to fetch the stating the pattern with out using the cases
+db.employee.find({name:{$regex:"^pe",$options:"i"}})
+//using the or opertor with $regex and $options
+db.employee.find({$or:[{name:{$regex:"ll",$options:"i"}},{name:{$regex:"o"}}]})
+//using the quantifier in the pattern matching 
+db.employee.find({$or:[{name:{$regex:"^m(.*)(l+)",$options:"i"}}]})
+//using the quantifier and grouping  in the pattern matching 
+db.employee.find({$or:[{name:{$regex:"^m(.* -i)(l{2})",$options:"i"}}]})
+//using the quantifier and grouping  in the pattern matching 
+db.employee.find({$or:[{name:{$regex:"^M(.*i)(l{2})",$options:"n"}}]})

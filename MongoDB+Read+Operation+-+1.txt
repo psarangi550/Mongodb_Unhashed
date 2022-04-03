@@ -122,14 +122,11 @@ db.employee.find({job : "manager", salary :{$gt : 3500}})
 Equivalent of AND and OR operator together
 ------------------------------------------------------------------------------------
 1. List managers with salary > 3500 and all the clerks
-db.employee.find({$or : [{job : "manager", salary : {$gt : 3500}}, {job : "clerk"}]})
 
 2. List managers with salary > 3500 and clerks with salary < 1000
-db.employee.find({$or : [{job : "manager", salary : {$gt : 3500}}, 
-                         {job : "clerk", salary : {$lt : 1000}}]})
+
 
 3. List managers from sales and research departments
-db.employee.find({job : "manager", $or : [{dept : "sales"}, {dept : "research"}]})
+
 
 same problem solved with $in operator
-db.employee.find({job : "manager", dept : {$in :["sales", "research"]}})

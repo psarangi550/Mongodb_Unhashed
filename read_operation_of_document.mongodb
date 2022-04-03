@@ -75,6 +75,7 @@ db.employee.find({});
 db.employee.find({name:"Jones"});//fetching only ja,es record then 
 //fetching based on greater than and less than symbol then
 db.employee.find({salary:{$lt: 1000}}); //fetchign the less than symbol
+db.employee.find({travel:{$lt: 1000}}); //fetching for the travel column or key 
 db.employee.find({salary:{$gt: 1000}}); //fetching the greater than symbol
 //using the in operator to fetch a list of key and values from the JSON document in the collection
 db.employee.find({job:{$in:["clerk","manager","analyst"]}})
@@ -104,3 +105,7 @@ db.employee.find({$or:[{job:"manager",salary:{$gt:3500}},{job:"clerk",salary:{$l
 db.employee.find({job:"manager",$or:[{dept:"sales"},{dept:"research"}]})
 //4.perforning the same operatopn with in operator 
 db.employee.find({job:"manager",dept:{$in:["sales","research"]}})
+//checking for the equiality operation
+db.employee.find({salary:{$eq: 3000}});
+//checking for the not equal to operation as
+db.employee.find({salary:{$ne: 3000}});
