@@ -33,3 +33,5 @@ db.employee.find({$or:[{name:{$regex:"^m(.*)(l+)",$options:"i"}}]})
 db.employee.find({$or:[{name:{$regex:"^m(.* -i)(l{2})",$options:"i"}}]})
 //using the quantifier and grouping  in the pattern matching 
 db.employee.find({$or:[{name:{$regex:"^M(.*i)(l{2})",$options:"n"}}]})
+//using the and operator with the regex value
+db.employee.find({name:{$regex:"ll",$options:"i"},name:{$regex:"^a",$options:"i"}})
