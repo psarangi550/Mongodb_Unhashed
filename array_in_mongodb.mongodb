@@ -1,0 +1,102 @@
+//using the array read operation in the mongodb
+//changing the database to company
+use("company")
+//showing all the available collection
+show collections;
+//creating a collection named as stationery
+db.createCollection("stationery");
+//adding the JSON document with array elements against the keys using the insertMany options 
+db.stationery.insertMany([{_id : 1,
+                          item : "file",
+                          material : "plastic",
+                          color : ["red", "blue", "white"],
+                          dimension : [10, 14],
+                          stock : 120},
+
+                         {_id : 2,
+                          item : "file",
+                          material : "paper",
+                          color : ["blue", "white", "red"],
+                          dimension : [10, 14],
+                          stock : 150},
+
+                         {_id : 3,
+                          item : "file",
+                          material : "stiff board",
+                          color : ["white","red","blue","green"],
+                          dimension : [9, 10],
+                          stock : 130},
+
+                         {_id : 4,
+                          item : "envelopes",
+                          material : "paper",
+                          color : ["pink","white","brown"],
+                          dimension : [5, 7],
+                          stock : 2000},
+
+                         {_id : 5,
+                          item : "envelopes",
+                          material : "clothline",
+                          color : ["brown", "cyan", "white"],
+                          dimension : [3, 8],
+                          stock : 1000},
+
+                         {_id : 6,
+                          item : "pad",
+                          color : ["white", "pink"],
+                          dimension : [8.5, 11.5],
+                          stock : 100},
+
+                         {_id : 7,
+                          item : "pad",
+                          color : ["white", "ruled", "yellow"],
+                          dimension : [9, 12],
+                          stock : 75}
+])
+
+//now finding all elements using the find method as 
+db.stationery.find();
+//now querying for the array elements with combination
+//here both the order and elements matter remember that 
+db.stationery.find({color:["white","red","blue","green"]})
+//but if we want to ignore the sequence then we can use $and operator 
+//on the below example it will consider all the color in the array elements in exact match ignoring the sequence
+//this will also consider the elements which which has value with these these three with more value 
+db.stationery.find({color:{$all:["white","red","blue"]}})
+//also we can use that with $or/$nor/and(,) operator
+//i presume the $in can be used with non array elements cant be used with array elements 
+//using the and operator with comma seaprated value 
+db.stationery.find({material:"plastic",color:["white","red","blue"]})
+//using the $or operator for the same purpose as 
+db.stationery.find({$or:[{item:"file"},{color:["white","red","blue"]}]})
+//if i want to fetch a particular array elemts then we can use it as normal one as
+//here the position can be anywhere but it will only check white being present or not 
+db.stationery.find({color:"white"})
+//here i want to check for particular position while being present or not 
+//checking the color should be white for the first position then
+//here we need to provide "" while defining the position
+//checking for the white at position 0 then  
+db.stationery.find({"color.0":"white"});
+//similarly checking for the dimention as
+db.stationery.find({"dimension.0":9})
+//we can also use the $lt/$lte/$gt/$gte/$eq/$ne for the array elements which are numeric in nature
+//but this condition can be any one of the value regardless of the position in the array 
+//here it will if any of the value in the array regardless its position less than 9 then display to the console
+db.stationery.find({dimension:{$lt:9}})
+//similarly we can take for the multiple value $lt and $gt as it is 
+//even though look like AND operator which is separated by comma but it will only be fetched if any one of the value in the collection is matching then it will be displayed 
+//so if any of the array value statifies one of the condition will be displayed
+db.stationery.find({dimension:{$lt:9,$gt:7}})
+//but if we want to restrict it as both the constion should match with both the values 
+//but here position will be regardless
+//condition2 can be matched with position 1
+//consition 1 can be matched with position 2
+//for that we have to use the $elemMatch
+db.stationery.find({dimension:{$elemMatch:{$gt:10,$lt:15}}})
+//but if we again going to consider both the value of postion along with condition i.e $lt/$gt this can be wrriten as
+db.stationery.find({"dimension.0":{$lt:10},"dimension.1":{$gt:10}})
+//this can also be written using the both condition as well 
+db.stationery.find({"dimension.0":{$lt:7,$gt:4},"dimension.1":{$gt:6,$lt:10}})
+//if we want to find the value where exactly 4 elements being present in the array 
+//for that we can use the $size operator as below
+db.stationery.find({color:{$size:4}})
