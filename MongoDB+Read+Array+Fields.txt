@@ -1,0 +1,106 @@
+================MongoDB Read Documents With Array Fields================
+
+What is an array field?
+------------------------------------------------------------------------
+A field (key) in a document which takes the values in the form of 
+array of values. For example color : ["red", "blue", "white"]
+
+Populating collection STATIONERY
+------------------------------------------------------------------------
+db.stationery.insertMany([{_id : 1,
+                          item : "file",
+                          material : "plastic",
+                          color : ["red", "blue", "white"],
+                          dimension : [10, 14],
+                          stock : 120},
+
+                         {_id : 2,
+                          item : "file",
+                          material : "paper",
+                          color : ["blue", "white", "red"],
+                          dimension : [10, 14],
+                          stock : 150},
+
+                         {_id : 3,
+                          item : "file",
+                          material : "stiff board",
+                          color : ["white","red","blue","green"],
+                          dimension : [9, 10],
+                          stock : 130},
+
+                         {_id : 4,
+                          item : "envelopes",
+                          material : "paper",
+                          color : ["pink","white","brown"],
+                          dimension : [5, 7],
+                          stock : 2000},
+
+                         {_id : 5,
+                          item : "envelopes",
+                          material : "clothline",
+                          color : ["brown", "cyan", "white"],
+                          dimension : [3, 8],
+                          stock : 1000},
+
+                         {_id : 6,
+                          item : "pad",
+                          color : ["white", "pink"],
+                          dimension : [8.5, 11.5],
+                          stock : 100},
+
+                         {_id : 7,
+                          item : "pad",
+                          color : ["white", "ruled", "yellow"],
+                          dimension : [9, 12],
+                          stock : 75}
+])
+
+
+Examples :
+1. List item = file and colors = red, blue & white
+
+db.stationery.find({item : "file", color : ["red","blue","white"]})
+Result : [1]
+
+
+2. list item = file and colors = red, blue & white [avoid exact match]
+
+db.stationery.find({item : "file", color : {$all : ["red","blue","white"]}})
+Result : [1, 2, 3]
+
+3. list item = pad and color = pink
+
+db.stationery.find({item : "pad", color : "pink"})
+Result : [6]
+
+4. list item with one of the dimensions is less than 9
+
+db.stationery.find({dimension :{$lt : 9}})
+Result : [4, 5, 6]
+
+5. list items with dimension greater than 4 and less than 6
+
+db.stationery.find({dimension : {$gt : 4, $lt : 6}})
+Result : [4, 5 | though the condition looks like AND it works as any one
+                 of dimensions satisfy the condition] 
+
+
+6. list items with dimensions EXACTLY greater than 4 and less than 6
+
+db.stationery.find({dimension : {$elemMatch : {$gt : 4, $lt : 6}}})
+Result : [4 | only first one dimension satisfies both conditions]
+
+
+7. list items with dimensions positionally first less than 4 and 
+   second greater than 6
+
+db.stationery.find({"dimension.0" : {$lt : 4}, "dimension.1" : {$gt : 6}})
+Result : [5 | index 0 is first element and index 1 is second element]
+
+
+8. list items which are available in exactly 4 colours
+
+db.stationery.find({color : {$size : 4}})
+Result : [3 | $size operator allows to specify the size of an array 
+               in terms of number of elements]
+
