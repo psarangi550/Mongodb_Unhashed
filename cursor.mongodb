@@ -1,0 +1,30 @@
+use my_cursor
+//creating the collection
+db.createCollection("cursor")
+//now inserting 100 index document into the Collection
+var obj=[] //defining the javascript array 
+//iterating over the cursor collection 
+for (var i=1 ; i<=100 ; i++){
+  var val={index:NumberInt(i)}
+  obj.push(val);
+}
+//inserting the record into the collection 
+db.getCollection("cursor").insert(obj);
+
+//now fetching the value using the find() method
+db.getCollection("cursor").find({});
+
+//here changing the iterator size of the mongodb shell
+help //fetching the help command
+DBQuery.shellBatchSize = 10 //changing the help command
+db.getCollection("cursor").find({}); // fetching the value using with the shell Batch Size command
+//default batch size of the collection is 101 i.e 1MB
+//if we calling it agian then it size increses to 4MB
+//but the size will go over the 16MB limit
+//But when we change the batch size there will be no impact on the iterator size
+//the iterator size will be the default which is 20 untill change
+// but we can see the batch change in wireshark which is between the mongodb sheel / mongo db client
+//and mongodb server 
+
+db.cursor.find().batch(30);
+//still this will display the 20 documents by default untill the iterator changes
