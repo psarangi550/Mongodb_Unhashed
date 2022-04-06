@@ -1,0 +1,42 @@
+typeof db
+use company
+var obj={
+    name:"pratik",
+    married:true,
+    skills:["python","sql","plsql"],
+    pratics:{platform:"windows",version:32}
+};
+print (obj);
+// typeof obj.name
+// typeof obj.married
+// typeof obj.skills
+// obj.skills instanceof Array
+// typeof obj.pratics
+
+var created_at=new Date("2018-11-11 13:00:05");
+
+show collections;
+
+db.cart.insert(
+  {
+  created_at:new Date("2018-11-11")
+  }
+)
+
+db.cart.insert(
+  {
+  created_at:new Date("2018-11-11 3:00:05")
+  }
+)
+
+db.cart.find()
+
+var created_date=Date("1997-03-16")
+// print(created_date)
+typeof created_date
+var created_new_date=new Date("1997-03-16")
+typeof created_new_date
+
+
+let created_at=new Date("2022-03-16 01:30:00")
+print(created_at)
