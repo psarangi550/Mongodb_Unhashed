@@ -1,0 +1,11 @@
+use my_cursor
+show collections
+db.cursor.find()
+//here changing the batchSize to 30
+//here at a time 30 documents collected from the mongodb server
+db.cursor.find().batchSize(30)
+//bnow we can change the iterator size as 
+DBQuery.shellBatchSize =10
+//againg fetching using the batchsize 
+db.cursor.find().batchSize(30)
+it //fetching the next set of result as below 

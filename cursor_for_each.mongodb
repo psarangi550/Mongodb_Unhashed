@@ -1,0 +1,20 @@
+//using the database as my_cursor
+use my_cursor
+//displaying the collection
+show collections
+//saving the find() return cursor to a variable which will act as an iterator 
+var cur_var = db.getCollection("cursor").find({})
+//now using the forEach() on the cur_var iterator which contains the cursor 
+//defining our own function to display the index number as string 
+// cur_var.forEach(function(x){
+//       print(`index is ${x.index}`);
+// })
+//using the arrow function
+// cur_var.forEach((x)=>{
+//       print(`index is ${x.index}`);
+// })
+//alternate approach
+cur_var.forEach(x =>{
+      print(`index is ${x.index}`);
+})
+
