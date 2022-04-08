@@ -1,0 +1,73 @@
+//using the mydb database
+use mydb
+//showing the collections
+show collections
+//using for the inserting the database
+db.createCollection("first")
+//displaying the collection
+db.first.find();
+//inserting the docs
+db.first.insertOne({
+  "name": "Mike",
+  "friends": [
+    {
+      "name": "Lora",
+      "age": NumberInt(23),
+      "registered": true
+    },
+    {
+      "name": "Bob",
+      "age": NumberInt(25),
+      "registered": false
+    },
+    {
+      "name": "Steve",
+      "age": NumberInt(27)
+    }
+  ]
+})
+//here fetching the value of queries
+db.first.find({"friends":{
+    "name": "Steve",
+      "age": NumberInt(27)
+}})
+//fetching without the order using the $elemMatch
+db.first.find({"friends":{$elemMatch:{
+      "age": NumberInt(27),
+        "name": "Steve"
+}}})
+//fetching one particular value
+db.first.find({
+    "friends.name":"Lora"
+})
+//fetching the value based on $lt and $gt value as 
+db.first.find({
+    "friends.age":{$gt:20,$lt:23}
+})
+//another one 
+db.first.find({
+    "friends.age":{$gt:20,$lt:24}
+})
+//using the independedent condition as
+db.first.find({
+    "friends.name":"Lora",
+    "friends.age":25,
+    "friends.registered":false
+})
+//using the $elemMatch to fetch from aparticular object 
+db.first.find({friends:{$elemMatch:{
+    name:"Lora",
+    age:23,
+    registered:true
+}}
+})
+//another one 
+db.first.find({friends:{$elemMatch:{
+    name:"Lora",
+    age:NumberInt(25),
+    registered:true
+}}
+})
+
+
+

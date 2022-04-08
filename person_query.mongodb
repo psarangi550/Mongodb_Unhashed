@@ -24564,3 +24564,49 @@ db.getCollection("person").insertMany([
 //we can fetch the count as 
 db.person.find({}).count()
 //this will display that it is of 1000 records 
+//fetching the person older than 27 and younger than 35
+db.person.find({age:{$lt:35,$gte:27}}).count()
+//person that is older than 35 and favoriteFruit not banana
+db.person.find({ age:{$gte:35} , favoriteFruit:{$ne:"banana"}}).count()
+//here checking the comparision operator with the string value as 
+db.person.find({name:{$lt:"C"}}).sort({name:-1})
+//using the operator with the dates
+db.person.find({registered:{$gt: ISODate("2017-09-01")}}).count()
+//using the new Date instead of ISODate
+db.person.find({registered:{$gt: new Date("2017-09-01")}}).count()
+//using the $in and $nin operator
+db.person.find({eyeColor:{$in:["green","brown"]},favoriteFruit:{$eq:"strawberry"}})
+//using the or operator
+db.person.find({$or:[
+    {
+    age:{$lt:24}
+    },
+    {
+     favoriteFruit:"banana"   
+    },
+    {
+     eyeColor:{$in:["green","blue"]}
+    }
+    ]
+    }).count()
+//usage of explicit $and operator
+db.person.find({$and:[{eyeColor:"green"},{favoriteFruit:"banana"}]})
+//fetching the count
+db.person.find({$and:[{eyeColor:"green"},{favoriteFruit:"banana"}]}).count()
+//using the same field but with both implicit and explicit and operator
+db.person.find({$and:[{age:{$ne:25}},{age:{$gte:25}}]}).count()
+//fetcing the same using the implicit and
+//here the first condition will be overidden by the second condition
+db.person.find({age:{$ne:25},age:{$gte:25}}).count()
+//using the in operator instead of or ifg the field values are of same 
+db.person.find({age:{$in:[25,35]}}).count()//this is recomended
+//but the below one not recomended
+db.person.find({$or:[{age:25},{age:35}]}).count()//this is not recomended
+//using both $and and $or operator
+db.person.find({$or:[{age:{$gt:33, $ne:37}},{"company.location.country":"Italy"}]}).count()
+//displaying collections
+show collections
+//fetching all the elements
+db.person.find({}) 
+//using the for the array operation
+db.person.find({$and:[{"tags.1":"ad"},{tags:{$size:3}}]}).count()
