@@ -1,0 +1,43 @@
+//elemMatch with positional operator $ in mongodb Update Query
+use mydb //using the mydb Database
+//displaying all avaible collections as 
+show collections
+//displaying all avaible document in collections
+db.getCollection("factory").find()
+//fetching the index:3 and corresponding index using the $elemMatch and updating the value using the positional operator $
+db.getCollection("factory").update(
+  //all  query with $elemMatch Operator
+  {index:3,cart:{$elemMatch:{title:"TV",price:{$gt:150}}}},
+  //here using the update Query with the $posiotional Operator
+  {
+    $set:{
+      "cart.$.price":NumberInt(350),
+      "cart.$.quantity":NumberInt(10)
+    }
+  },
+  //here we can use the option as the
+  {}
+)
+//displaying all avaible document in collections
+db.getCollection("factory").find()
+//displaying only index 3 value as 
+//displaying all avaible document in collections
+db.getCollection("factory").find({index:3})
+//changing the value of index 5 with $elemMatch and positional operator with $inc operator
+//fetching the 5th index
+db.getCollection("factory").find({index:5});
+//here in the quiery we are using the $elemMatch and in the update using the $ positional operator and the $inc value as
+db.getCollection("factory").update(
+    //query can be displayed as below using the $elemMatch
+    {cart:{$elemMatch:{price:330,title:"Laptop"}}},
+    //using the $ posiutional operator with $inc incresing the quantity value to 10
+    {
+        $inc:{
+            "cart.$.quantity":5 //incrementing the quantity value
+        }
+    },
+    //here using the no option value 
+    {}
+)
+//fetchign the fifth index as 
+db.getCollection("factory").find({index:5});

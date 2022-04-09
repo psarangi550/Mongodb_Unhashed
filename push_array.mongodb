@@ -1,0 +1,28 @@
+//using the mydb for array update operation
+use mydb
+//displaying the collection available 
+show collections
+//displaying the all the elements present in factory collection
+db.getCollection("factory").find()
+//updating the array field using the $push operator
+db.getCollection("factory").update(
+  //fetching the query as below
+  {index:2},
+  //using the $push operator ro push the value
+  {$push:{cart:"item2"}},
+  {}
+)
+//fetching the ekements as below 
+db.getCollection("factory").find()
+//adding the item 2 and item3 where the index is 3
+db.getCollection("factory").update(
+  //fetching the query as below
+  {index:3},
+  //here we are using the $each modifier operator with $push operator 
+  {$push:{cart:{
+    $each:["item2","item3"]
+  }}},
+  {}
+)
+//fetching the ekements as below 
+db.getCollection("factory").find({index:3})

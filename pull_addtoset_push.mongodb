@@ -1,0 +1,61 @@
+//here using the mydb database
+use mydb // using the mydb database
+//displaying the available collection as
+show collections //displaying the collections
+//fetching value from factory collection
+db.getCollection("factory").find();
+//using the $addToset Operator to add 4 item2,item3,item4 to the index:4
+db.getCollection("factory").update(
+  //using the Query as index4
+  {index:4},
+  //here we are using the update with $addToSet along with $each operator
+  {
+    $addToSet:{cart:{$each:["item2","item3","item4"]}}},
+  //this is the optinal field which is optinal
+  {}
+)
+//fetching value from factory collection
+db.getCollection("factory").find();
+//adding the same to index 5
+db.getCollection("factory").update(
+  //using the Query as index4
+  {index:5},
+  //here we are using the update with $addToSet along with $each operator
+  {
+    $addToSet:{cart:{$each:["item2","item3","item4","item5"]}}},
+  //this is the optinal field which is optinal
+  {}
+)
+//fetching value from factory collection
+db.getCollection("factory").find();
+//now adding one diplicate element using the $push operator to index 4
+db.getCollection("factory").update(
+  //normal query to Fetch Value
+  {index:4},
+  //using the update Query as
+  {
+    $push:{
+      cart:"item2"
+    }
+  },
+  //here we are using the option as below 
+  {}
+)
+//fetching value from factory collection
+db.getCollection("factory").find();
+//now using the pull trying to delete the item2
+//here also both occurence will be removed
+db.getCollection("factory").update(
+  //normal query to Fetch Value
+  {index:4},
+  //using the update Query as using the pull is 
+  {
+    $pull:{
+      cart:"item2"
+    }
+  },
+  //here we are using the option as below 
+  {}
+)
+//fetching value from factory collection
+db.getCollection("factory").find();

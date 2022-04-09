@@ -1,0 +1,123 @@
+//using the mydb database
+use mydb;
+//displaying all the collections inside the mydb database
+show collections;
+//using the factory collections
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+//here removing all the elements from the array using the $pullAll operator
+db.getCollection("factory").update(
+  {index:5},
+  {
+    $pullAll:{
+        cart:["item","item2","item3","item4","item5"]
+    }
+  }
+)
+//using the factory collections
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+//adding the nested document into the cart array using the $push method
+db.getCollection("factory").update(
+  //using the query to fetch only index 5 elements
+  {index:5},
+  {
+    $push:{
+      "cart.0.title":"TV"
+    }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+db.getCollection("factory").update(
+  //using the query to fetch only index 5 elements
+  {index:5},
+  {
+    $unset:{
+      "cart.0.title":1
+    }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+db.getCollection("factory").update(
+  //using the query to fetch only index 5 elements
+  {index:5},
+  {
+    $set:{
+        "cart.0.title":"TV" ,
+        "cart.0.price":NumberInt(340),
+        "cart.0.quantity":NumberInt(2),
+        "cart.1.title":"Phone" ,
+        "cart.1.price":NumberInt(150),
+        "cart.1.quantity":NumberInt(1)
+  }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+//using the $push operator adding the value array
+db.getCollection("factory").update(
+  //using the query to fetch only index 5 elements
+  {index:5},
+  {
+    $push:{cart:
+        {
+          title: "TV",
+          price: NumberInt(330),
+          quantity: NumberInt(5)
+        }
+      }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+//fetching the thrid index from the array and change the title of that document
+db.getCollection("factory").update(
+  {index:5,"cart.price":NumberInt(330)},
+  {
+    $set:{
+      "cart.$.title":"Laptop"
+    }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:5});
+//using the $push with $each to insert document into array 
+db.getCollection("factory").update(
+  //using the query to fetch only index 5 elements
+  {index:3},
+  {
+    $push:{cart:{$each:
+        [
+          {
+          title: "TV",
+          price: NumberInt(330),
+          quantity: NumberInt(5)
+        },
+        {
+          title: "Phone",
+          price: NumberInt(150),
+          quantity: NumberInt(2)
+        }
+        ]
+    }
+    }
+  },
+  {}
+)
+db.getCollection("factory").find();
+//fetching the fifth document from collections
+db.getCollection("factory").find({index:3});

@@ -1,0 +1,66 @@
+//using the mydb database
+use mydb //using the mydb database
+//displaying the collections as
+show collections
+//fetching the valuer from the collection factory
+db.getCollection("factory").find();
+//using the update methods to update the collection documents at the first document
+db.getCollection("factory").update(
+   //no query for fetching the value as we are using the all
+  {},
+  //using the set operator to set the value for the first documents
+  {$set:{
+    processed:false
+  }},
+  //using the value for the options as below
+  {}
+);
+//fetching the element as below
+db.factory.find({}); 
+//setting the value for the index 2
+db.factory.update(
+  //using the query in this case as below 
+  {index:2},
+  //using the $set Operator in the update query as below 
+  {$set:{
+    cartid:NumberInt(325),
+    constumer:{
+        name:"pratik K sarangi",
+        age:30,
+        email:"psarangi50@gmail.com"
+    }
+  }},
+  //here we are not using any option key value 
+  {}
+  )
+//querying the collection again as below as
+db.factory.find({});
+//now adding processed:false for the rest of documents as below 
+db.factory.find({processed:{$exists:false}});
+db.factory.update(
+  //this is for the query hence we need to use 
+  {processed:{$exists:false}},
+  //here the update query to use can be of 
+  {$set:{
+    processed:false
+  }},
+  //this is for the options which is optional
+  //using the multi:true constion in this case  
+  {multi:true}
+)
+//querying the collection again as below as
+db.factory.find({});
+//now adding processed:false for the rest of documents as below 
+db.factory.find({processed:{$exists:false}});
+//alternate approach
+db.factory.update(
+  //this is for the query hence we need to use whole docs
+  {},
+  //here the update query to use can be of 
+  {$set:{
+    processed:false
+  }},
+  //this is for the options which is optional
+  //using the multi:true constion in this case  
+  {multi:true}
+)

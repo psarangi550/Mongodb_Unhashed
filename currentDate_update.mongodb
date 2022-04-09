@@ -1,0 +1,134 @@
+//using the $currentDate operator in the update query 
+/* -----------------------------------------------------*/
+use mydb //using the mydb database
+//showing all the collection available
+show collections
+//displaying the all docs availble in favtory collection as
+db.getCollection("factory").find()
+//now adding the updatedAt field for the first document as
+db.getCollection("factory").update(
+  //here we are using no query if we eant we can use {index:1}
+  {},
+  //using the update query with $set Operator
+  {$set:{
+        updatedAt:new Date() //adding the new Date value 
+  }
+  },
+  //using the optional paramter as object to update
+  //as it is optional here we are not using the same
+  {}
+)
+//fetching the index 1 as query as
+db.getCollection("factory").find({index:1})
+//now fetching the whole docs as
+db.getCollection("factory").find()
+//using the $currenDate operator updating the field which doesnot have updateAt column
+db.getCollection("factory").update(
+  //here we are using the query 
+  {updatedAt:{$exists:false}},//here checking the place where updateAt does not exist
+  //here we are using the update with $currentDate operator
+  {$currentDate:{updatedAt:true}},//using the currentDate Operator for the same 
+  //here using the option field as multi:true
+  {multi:true}//using it for the multiple field 
+)
+//now fetching the whole docs as
+db.getCollection("factory").find()
+//here we are adding the cart as empty array to all the documet
+db.getCollection("factory").update(
+  //here query keeping as empty so that it will be added to each key document 
+  {},
+  //here using the update query with $set operator for the same
+  {$set:{
+    cart:[] //here adding the cart as empty array to all the documents
+  }},
+  //using the multi:true as option to perform this on multiple field 
+  {multi:true}
+)
+//now fetching the whole docs as
+db.getCollection("factory").find()
+//now here we are updating the calue of the cart to add a value to the cart and the same time adding the updated current Date using the 
+//$currentDate Operator 
+//updating the cart value as
+db.getCollection("factory").update(
+  //using the query value 
+  {index:1},
+  //here using the update query with $set and $currentDate Operator 
+  {/**
+   * field: The field name
+   * expression: The expression.
+   */
+  $set: {
+    cart:["item"] //updating the cart array as 
+  }
+  }
+)
+//fetching th value as the
+db.getCollection("factory").find()
+//unsetting the item as 
+db.getCollection("factory").update(
+  //using the query value 
+  {index:1},
+  //here using the update query with $set and $currentDate Operator 
+  {/**
+   * field: The field name
+   * expression: The expression.
+   */
+  $unset: {
+    cart:1 //updating the cart array as 
+  }
+  }
+)
+//fetching th value as the
+db.getCollection("factory").find()
+
+//adding the cart to the index =1
+db.getCollection("factory").update(
+  //using the query value 
+  {index:1},
+  //here using the update query with $set and $currentDate Operator 
+  {/**
+   * field: The field name
+   * expression: The expression.
+   */
+  $set: {
+    cart:[] //updating the cart array as 
+  }
+  }
+)
+//fetching th value as the
+db.getCollection("factory").find()
+//lets use for the one document changing cart and changing the updateAt value 
+db.getCollection("factory").update(
+  //using the query value 
+  {index:1},
+  //here using the update query with $set and $currentDate Operator 
+  {
+    $set: {
+    cart:["item1"] //updating the cart array as 
+    },
+    $currentDate:{
+      updatedAt:true
+      }
+    }
+)
+//fetching th value as the
+db.getCollection("factory").find()
+
+//lets change it for all the values as 
+db.getCollection("factory").update(
+  //here using the Query As for the All value 
+  {},
+  //using the $set and $currentDate Operator for the document
+  {
+    $set:{
+      cart:["item"]
+    },
+    $currentDate:{
+      updatedAt:true
+    }
+  },
+  //using the option as multi:true
+  {multi:true}
+)
+//fetching th value as the
+db.getCollection("factory").find()

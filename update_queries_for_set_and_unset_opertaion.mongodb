@@ -1,0 +1,150 @@
+//update queries
+use mydb //using the mydb logical database
+//creating the collection named as factory
+db.createCollection("factory")
+//inserting the docs into it 
+var obj = [] //defining the obj as empty array
+//iterating through it 
+for( let i=1 ; i<=5; i++ ){
+  var val ={index:i}
+  obj.push( val )//pushing to the empty array 
+}
+//inserting the document as the bulk operation
+db.getCollection("factory").insertMany(obj)
+//fetching the documents as
+db.getCollection("factory").find({})
+//now using the $set method to update the index 2
+db.getCollection("factory").update(
+  //query field mandetory 
+  {index:2},
+  //update field mandetory with $set operator
+  {$set:{cartid:NumberInt(327),
+         customer:{
+         name:"pratik",
+         age:NumberInt(27),
+         email:"psarangi50@gmail.com"
+  }}},
+  //option field is optional
+  {}
+)
+//fetching only the index 2 value as
+db.getCollection("factory").find({index:2})
+//again updating  the value with
+db.getCollection("factory").update(
+  //query field mandetory 
+  {index:2},
+  //update field mandetory with $set operator
+  {$set:{cartid:NumberInt(327),
+         customer:{
+         name:"pratik",
+         age:NumberInt(27),
+         email:"psarangi50@gmail.com"
+  },
+  cart:[]
+  }
+  })
+//fetching again 
+db.getCollection("factory").find({index:2})
+//fetching the total value as 
+db.getCollection("factory").find({})
+//using the $usnset operator 
+db.getCollection("factory").update(
+  {index:2},
+  //unsetting the cartid and cart array elements
+  {/**
+   * Provide the field name to exclude.
+   * To exclude multiple fields, pass the field names in an array.
+   */
+  $unset: {
+    cartid:1,
+    cart:1
+  }},
+  //option fielkd with no option
+  {}
+  )
+  //fetching the index 2 calue as 
+db.getCollection("factory").find({index:2})
+//fetching the totla value
+db.getCollection("factory").find({})
+//now unsetting the customer name and age 
+db.getCollection("factory").updateOne(
+  //query which is mandetory
+  {index:2},
+  //update with update operator which is also mandetory 
+  {/**
+   * Provide the field name to exclude.
+   * To exclude multiple fields, pass the field names in an array.
+   */
+  $unset: {
+    "customer.name":1,
+    "customer.age":1
+  }},
+  //here option is the optional option
+  {}
+  )
+  //fetching the index 2 calue as 
+db.getCollection("factory").find({index:2})
+//fetching the totla value
+db.getCollection("factory").find({})
+//using by using the no query option as below will
+//this will update the first document in the collection as no query provided
+db.getCollection("factory").update(
+  //query field mandetory 
+  {},
+  //update field mandetory with $set operator
+  {$set:{cartid:NumberInt(327),
+         customer:{
+         name:"pratik",
+         age:NumberInt(27),
+         email:"psarangi50@gmail.com"
+  },
+  cart:[]
+  }
+  })
+  //fetching the first document 
+db.getCollection("factory").find({index:1})
+//fetching the totla value
+db.getCollection("factory").find({})
+//unsetting with out the query which will unset the first document of the getCollection
+db.getCollection("factory").update(
+  //fetching the query
+  {},
+  //updating the query as well
+  {/**
+   * Provide the field name to exclude.
+   * To exclude multiple fields, pass the field names in an array.
+   */
+  $unset: {
+    customer:1,
+    cart:1,
+    cartid:1
+
+  }},
+  //options for the optional paramert
+  {}
+)
+//fetching the first document 
+db.getCollection("factory").find({index:1})
+//fetching the totla value
+db.getCollection("factory").find({})
+//we can performn the same for the index 2 as 
+db.getCollection("factory").update(
+  //fetching the query
+  {index:2},
+  //updating the query as well
+  {/**
+   * Provide the field name to exclude.
+   * To exclude multiple fields, pass the field names in an array.
+   */
+  $unset: {
+    customer:1
+
+  }},
+  //options for the optional paramert
+  {}
+)
+  //fetching the index 2 calue as 
+db.getCollection("factory").find({index:2})
+//fetching the totla value
+db.getCollection("factory").find({})
+
