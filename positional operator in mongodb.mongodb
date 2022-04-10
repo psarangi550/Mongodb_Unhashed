@@ -1,0 +1,41 @@
+//positional operator in mongodb
+use mydb //using the mydb as database
+//here also we can display the collections as 
+show collections
+//displaying all the elements in the factory collection
+db.getCollection("factory").find({})
+//here we want  to remove item3 from index 4 using the positional operator as the
+db.getCollection("factory").update(
+  {index:4,cart:"item3"},
+  {
+    /**
+     * Provide the field name to exclude.
+     * To exclude multiple fields, pass the field names in an array.
+     */
+    $unset: {
+      "cart.$":1
+    }
+  },
+  //using the option optional field as empty
+  {}
+)
+//displaying all the elements in the factory collection
+db.getCollection("factory").find({})
+//here we are usetting the value not pulling out hence the value will be null
+//using the pull we can remove that as 
+db.getCollection("factory").update(
+  {index:4},
+  {
+    /**
+     * Provide the field name to exclude.
+     * To exclude multiple fields, pass the field names in an array.
+     */
+    $pull: {
+      cart:null
+    }
+  },
+  //using the option optional field as empty
+  {}
+)
+//displaying all the elements in the factory collection
+db.getCollection("factory").find({})

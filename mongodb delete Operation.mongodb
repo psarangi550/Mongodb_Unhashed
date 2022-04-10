@@ -1,0 +1,52 @@
+//mongodb delete Operation
+use tempDb //using the tempDb database
+//checking in which database now we belong in 
+db//displaying the db we are currently loggin as
+//inserting the docs which will create the collection and the database
+db.tempCollection.insertMany([
+  {_id:NumberInt(1)},
+  {_id:NumberInt(2)},
+  {_id:NumberInt(3)},
+  {_id:NumberInt(4)},
+  {_id:NumberInt(5)}
+])
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//removing a single document from collection using the remove()
+//this will provide the value in writeResultFormat
+db.getCollection("tempCollection").remove({_id:NumberInt(2)})
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//removing one document using the optional parameter as true in remove() with the query
+db.getCollection("tempCollection").remove({_id:NumberInt(3)},true)
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//removing the document without any query which will only remove one document from the beginning of the getCollection
+db.getCollection("tempCollection").remove({},true)//this will remove the document with _id:1
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//removing the entitre document using the collection as 
+db.getCollection("tempCollection").remove({})
+
+//here we are now using the deleteOne method for the same 
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//here no need of true as remove() for deleting a single docuiment from the collection
+db.getCollection("tempCollection").deleteOne({_id:NumberInt(2)})
+//if we are having a query which select multiple document then only first document will be deleted
+db.getCollection("tempCollection").deleteOne({_id:{$in:[3,4]}})
+//this will provide the deleteOne as only 3 will be deleted not the 4th document
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+//even though we are not providing any query in that case also it will remove only one document from the Collection
+db.getCollection("tempCollection").deleteOne({})
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
+
+//here we can use the deleteMany option which will provide the Object in return with acknowledge true value 
+//removing all the elements from the document 
+db.getCollection("tempCollection").deleteMany({})
+//removing multiple document from the collection as below 
+db.getCollection("tempCollection").deleteMany({_id:{$ne:4}})
+//fetching all the documents in the collection
+db.getCollection("tempCollection").find({})
