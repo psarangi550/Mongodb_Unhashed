@@ -1,0 +1,57 @@
+//using the $sort stageOperator in the aggregation
+use mydb //using the mydb database
+show collections //displaying all the collections available
+//fetchign all the document in the collection as
+db.person.find({})
+//only using the $sort in the aggregate()
+db.person.aggregate([
+  //here we are using the stage as $sort stage operator only then
+  {$sort:{name:-1}}//soring the name in the descending format 
+])
+//here using the $group with $sort staging operator in the mongodb Aggregation
+db.person.aggregate([
+  //staging can be done using the $group first then $sort
+  {$group:{_id:"$age"}},//grouping by the age field as using the agregate expression
+  //here we need to use the _id as we are grouping by the column name 
+  {$sort:{_id:-1}}//here we are sorting the agrregate documents in the descending format  
+])
+//using the $sort with the $group with multiple field in the $group and $sort
+db.person.aggregate([
+  //using the group stage operator as $group as 
+  //here we are grouping by the multiple field
+  //hence only dictinct combitnation will be considered
+  {$group:{_id:{eye:"$eyeColor",fruit:"$favoriteFruit"}}},
+  //also sorting by the $sort with both of those operator as
+  {$sort:{"_id.eye":-1,"_id.fruit":1}}
+  //here we are sorting the eyeColor in descending order and fruit i.e favoriteFruit in ascending order
+  //the second sort will be considered when the first sort having the common value 
+])
+//using the $match and $group and $sort opertor all together
+//here the staging will be $match-->$group-->$sort
+db.person.aggregate([
+  //using the $match as the stage 1 to filter out the document whose age >=25
+  {$match:{age:{$gte:25}}},
+  //using the group stage operator as $group as 
+  //here we are grouping by the multiple field
+  //hence only dictinct combitnation will be considered
+  {$group:{_id:{eye:"$eyeColor",fruit:"$favoriteFruit"}}},
+  //also sorting by the $sort with both of those operator as
+  {$sort:{"_id.eye":-1,"_id.fruit":1}}
+  //here we are sorting the eyeColor in descending order and fruit i.e favoriteFruit in ascending order
+  //the second sort will be considered when the first sort having the common value 
+])
+//we can also use the $count  stage as the operator to the last as 
+db.person.aggregate([
+  //using the $match as the stage 1 to filter out the document whose age >=25
+  {$match:{age:{$gte:25}}},
+  //using the group stage operator as $group as 
+  //here we are grouping by the multiple field
+  //hence only dictinct combitnation will be considered
+  {$group:{_id:{eye:"$eyeColor",fruit:"$favoriteFruit"}}},
+  //also sorting by the $sort with both of those operator as
+  {$sort:{"_id.eye":-1,"_id.fruit":1}},
+  //here we are sorting the eyeColor in descending order and fruit i.e favoriteFruit in ascending order
+  //the second sort will be considered when the first sort having the common value 
+  //here we can add the $count as 
+  {$count:"totalAggregateCount"}
+])

@@ -24616,10 +24616,36 @@ db.person.aggregate([
     //stage 2 using the $match operator
     {$match:{_id:35}}
 ])
+//this will provide the distinct result same asx the distinct ()
+db.person.aggregate([
+    {$group:{_id:"$age"}}
+])
+//the distinct method can be written as 
+db.person.distinct("age")
+//fetching the distinct result of the coutry which present in company field and location nested document 
+db.person.aggregate([
+    {$group:{_id:"$company.location.country"}}
+])
+//similarly we can find the same using the dictyinct method as below 
+db.person.distinct("company.location.country")
+//fetching dictinct company location  as below
+db.person.aggregate([
+    {$group:{_id:"$company.location"}}
+])
+//fetching dictinct company as below 
+db.person.aggregate([
+    {$group:{_id:"$company"}}
+])
 //using a complex one
 db.person.aggregate([
     //here in the stage 1 using the $group operator
-    {$group:{_id:{age:"$age",eyeColor:"$eyeColor",Fruit:"$favoriteFruit"}}},
+    {$group:{_id:{age:"$age",eye:"$eyeColor",Fruit:"$favoriteFruit"}}},
     //stage 2 using the $match operator
     {$match:{"_id.age":35}}
+])
+db.person.aggregate([
+    //stage 1 using the $group operator
+    {$group:{_id:{age:"$age", eyeColor:"$eyeColor"}}},
+    //stage2 using the $match operator
+    {$match:{"_id.age":25}}
 ])

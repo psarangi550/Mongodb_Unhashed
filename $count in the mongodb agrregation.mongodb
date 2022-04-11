@@ -1,0 +1,27 @@
+//$count in the mongodb agrregation
+use mydb //using the mydb database
+show collections //displaying the collections available
+db.person.find({})//fetching all the document as  
+//now using the $count with $group and $match as
+db.person.aggregate([
+  //this is the stage 1 for the matching
+  {$count:"Total_Document"}
+])
+db.person.aggregate([
+  //this is the stage 1 for the matching
+  {$match:{gender:"female"}},
+  //here using the grouping 
+  {$group:{_id:{age:"$age",eyeColor:"$eyeColor",favoriteFruit:"$favoriteFruit"}}},
+  //fetchign the count on the the third attempt
+  {$count:"total_document"}
+  ])
+//using the forEach method to count the number of documents 
+var count=0
+var obj=[]
+db.person.aggregate([]).forEach(function(x){
+    count++;
+    obj.push(count);
+})
+print(`total document is ${obj.length}`)
+//we can also use the itcount() method of the cursor which is return by db.person.aggregate([]) which is same as db.<collection name>.find({})
+db.person.aggregate([]).itcount()
