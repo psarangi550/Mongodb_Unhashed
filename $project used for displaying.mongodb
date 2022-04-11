@@ -1,0 +1,52 @@
+//$project used for displaying the particular firld and also display the document in a restructure format
+use mydb //using the mydb database
+//displaying all the availble collection as
+show collections //displaying the collection
+//fetching all the documents in the persons collection as below 
+db.getCollection("person").find({})//fetching all the collection elements using the find()
+//using the aggregation option for the document in the collection as
+db.getCollection("person").aggregate([
+  //stage 1 using the $project opertor as below
+  {/**
+   * specifications: The fields to
+   *   include or exclude.
+   */
+  $project: {
+    age:1,gender:1,_id:0,"company.location.country":1
+  }}
+])
+//we can also use the $project with aggregation expression in order to restrure the document as 
+db.person.aggregate([
+  //here the staging for the collection will happen
+  {/**
+   * specifications: The fields to
+   *   include or exclude.
+   */
+  $project: {
+    gender:1,
+    _id:0,
+    company_info: {
+      //referencing using the aggregation expression
+      eye:"$eyeColor",
+      fruit:"$favoriteFruit",
+      age:"$age"
+    }
+  }}
+])
+//using it with the $match,$group,$sort and $project as
+db.person.aggregate([
+  //here on the stage 1 using the $match condition as
+  {$match:{age:{$gte:23}}},//here querying for the age greater than 23
+  //stage 2 using the $project to fetch particular field from it 
+  {/**
+   * specifications: The fields to
+   *   include or exclude.
+   */
+  $project: {
+    gender:1,age:1,_id:0,"company.location.country":1,"company.location.address":1
+  }},
+  //here in the stage 3 using that grouping by the age gender and eyeColor is
+  {$group:{_id:{gender:"$gender",age:"$age"}}},
+  //here at the end using the $sort as below 
+  {$sort:{"_id.gender":1,"_id.age":-1}}
+])
