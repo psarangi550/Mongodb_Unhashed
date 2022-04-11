@@ -1,0 +1,51 @@
+//using the $unwind operator as below 
+//$project used for displaying the particular firld and also display the document in a restructure format
+use mydb //using the mydb database
+//displaying all the availble collection as
+show collections //displaying the collection
+//fetching all the documents in the persons collection as below 
+db.getCollection("person").find({})//fetching all the collection elements using the find()
+//using the aggregation option for the document in the collection as
+db.getCollection("person").aggregate([
+  //splitting the array of the document into multiple document as below using $unwind
+  {$unwind:"$tags"}
+  //counting the number of documents in the collection after aggregation is 
+  // {$count:"totla_unwind"}
+])
+db.getCollection("person").aggregate([
+  //splitting the array of the document into multiple document as below using $unwind
+  {$unwind:"$tags"}, 
+  //using the grouping to fetch the particular valued document
+  {$group:{_id:{eyeColor:"$eyeColor", docs_tag:"$tags",index:"$index"}}},
+  //now sorth=ing the record as
+  {$sort:{"_id.index":1}},
+  //counting its size as
+  {$count:"total_after_aggregation"}
+])
+db.getCollection("person").aggregate([
+  //using the stage as unwind for tags array 
+  {$unwind: "$tags"},
+  //now grouping them with the $group operator
+  {$group:{_id:{tag:"$tags"}}}
+])
+
+// we can also count it by using th $count in the last stage as
+db.getCollection("person").aggregate([
+  //using the stage as unwind for tags array 
+  {$unwind: "$tags"},
+  //now grouping them with the $group operator
+  {$group:{_id:{tag:"$tags"}}},
+  //counting the value as 
+  {$count:"total_unwind_array"}
+])
+
+//we can also use the $unwind with the $project as 
+db.person.aggregate([
+  //using the stage as $unwind
+  {$unwind:"$tags"},
+  //now using the $project to display the field rerquired
+  {$project:{tag:"$tags", index:1,gender:1,extra:{
+    eye:"$eyeColor",
+    favorite_fruit:"$favoriteFruit"
+  }}}
+])
