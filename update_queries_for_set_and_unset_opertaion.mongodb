@@ -147,4 +147,17 @@ db.getCollection("factory").update(
 db.getCollection("factory").find({index:2})
 //fetching the totla value
 db.getCollection("factory").find({})
+db.getCollection("factory").update(
+  //query field as
+  {index:1},//fetching index 1
+  //update query 
+  {$push:{cart:
+  {
+    $each:["item2","item3"]
+  }}},
+  //options which is not mandetory 
+  {}
+  )
+//fetchig the index 1 as below
+  db.getCollection("factory").find({index:1})
 

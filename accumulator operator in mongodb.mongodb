@@ -1,0 +1,95 @@
+//accumulator operator in mongodb
+use mydb //using the mydb database
+show collections //displaying all available collections
+db.person.find({})//fetching all the documents in the collections
+//adding the total_quantity to the document as 
+ db.person.update(
+    {},
+    {$set:{quantity:20}},
+    {multi:true}
+)
+db.person.aggregate([
+  //here using the stage for matching the age is 25
+  {$match:{age:40}},
+  //using the $count to match the total value as 
+  {$count:"total"}
+])
+
+db.person.aggregate([
+  //here using the stage for matching the age is 25
+  {$match:{age:40}},
+  //here using the gropup to fetch the total number of 25 ages avaible for
+  {$group:{_id:{age:"$age"},total:{$sum:"$quantity"}}},
+  //sorting the age descendingly
+  {$sort:{"_id.age":-1}}
+])
+//we can also fetch the count also as
+db.person.find({age:25}).itcount()
+db.person.aggregate([
+  //here using the stage for matching the age is 25
+  {$match:{age:25}},
+  //here using the gropup to fetch the total number of 25 ages avaible for
+  {$group:{_id:{age:"$age"},total:{$sum:"$quantity"}}}
+  //here using the count as 
+  // {$count:"total_record"}
+])
+
+db.person.aggregate([
+  //here using the stage for matching the age is 25
+  {$match:{age:{$gt:25,$lt:30}}},
+  //here using the gropup to fetch the total number of 25 ages avaible for
+  {$group:{_id:{age:"$age"},total:{$sum:"$quantity"}}}
+  //here using the count as 
+  // {$count:"total_record"}
+])
+
+db.person.aggregate([
+  //here we are checking the total quantity it should be 1000*20=2000
+  {$group:{_id:"$age",total:{$sum:1}}}
+])
+
+//$sum operator with $unwheel stage
+db.person.aggregate([
+  //here $unwind to unwheel the array 
+  {$unwind:"$tags"},//here splitting the tags
+  //grouping them by the tags and caculating the the total quantity of the array
+  {$group:{_id:"$tags",total:{$sum:1}}}
+])
+
+db.person.aggregate([
+  //here $unwind to unwheel the array 
+  {$unwind:"$tags"},//here splitting the tags
+  //grouping them by the tags and caculating the the total quantity of the array
+  {$group:{_id:"$tags",total:{$sum:"$quantity"}}}
+])
+
+//here we are using the $avg Average stage field
+db.person.aggregate([
+  //here the query can be used as 
+  {$group:{_id:"$gender",average_age:{$avg:"$age"}}}
+])
+
+//for the country check the average age
+db.person.aggregate([
+  //here the query can be used as 
+  {$group:{_id:"$company.location.country",average_age:{$avg:"$age"}}}
+])
+//fetching the count of document in each group as
+db.person.aggregate([
+  //here using the search as the $group with accumulator operator $sum
+  {$group:{_id:"$favoriteFruit",total:{$sum:1}}}
+])
+//fetching the totla quantity for the group of favoriteFruit
+db.person.aggregate([
+  //here using the search as the $group with accumulator operator $sum
+  {$group:{_id:"$favoriteFruit",total:{$sum:"$quantity"}}}
+])
+//fetchignthe count in the number format 
+db.person.aggregate([
+  //here using the search as the $group with accumulator operator $sum
+  {$group:{_id:"$favoriteFruit",total:{$sum:NumberInt(1)}}}
+])
+
+//rough one to revision
+db.person.find({})
+db.person.find({age:{$type:"long"}})
