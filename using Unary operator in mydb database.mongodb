@@ -1,0 +1,53 @@
+use mydb //using the mydb database
+show collections //display the collections
+db.person.find({})//fetching all the documents
+//now we can use the unary operator $lt in the $group as 
+db.person.aggregate([
+  //stage1
+  {$project:{index:1,eye:"$eyeColor"}}
+])
+//$project with unary operator $type
+db.person.aggregate([
+  //stage1
+  {$project:{index:1,eye:"$eyeColor",ageType:{$type:"$age"}}}
+])
+//using the $multiply unary operator 
+db.person.aggregate([
+  //stage1
+  {$project:{index:1,eye:"$eyeColor",agemul:{$multiply:["$age","$quantity"]}}}
+])
+//revison on $sorting
+db.person.aggregate([
+  //here using the stage Operation to fetch value
+  {$match:{age:{$gte:25}}},
+  //grouping the ages which is also be >25
+  {$group:{_id:"$age"}},
+  //now sorting the fields
+  {$sort:{_id:-1}}
+])
+
+db.person.aggregate([
+  {$group:{_id:null,total:{$sum:"$quantity"}}},
+  {$project:{_id:0}}
+])
+
+db.person.aggregate([
+  {$project:{getAge:{$and:[{age:24}]}}}
+])
+
+db.person.aggregate([
+  {$project:{getAge:{$or:[{age:24},{age:25}]}}}
+])
+
+db.person.aggregate([
+  {$project:{getAge:{$or:[{age:{$lt:29}},{age:25}]}}}
+])
+
+db.person.aggregate([
+  {$group:{_id:age,total:{$sum:{"$age":{$gt:25}}}}}
+])
+
+db.person.aggregate([
+  {$group:{_id:"$eyeColor",MaxAge:{$max:"$age"}}}
+])
+
