@@ -1,0 +1,63 @@
+//mongodb indexes
+use mydb //using the mydb database
+//showing all collections as show collections
+show collections
+//showing the indexes in the persons colection using the getindexes()
+db.person.getIndexes()
+//here creating the index 
+db.person.createIndex({"index":1})
+//showing the indexes in the persons colection using the getindexes()
+db.person.getIndexes()
+//we can also creating the index using the createIndex using the name field descendingingly
+db.person.createIndex({name:-1})
+//showing the indexes in the persons colection using the getindexes()
+db.person.getIndexes()
+//dropping the index in the persons colection
+db.person.dropIndex({name:-1})
+//dropping the index in the person database
+db.person.dropIndex({index:1})
+//creating the name field as unique index
+db.person.createIndex({name:-1},{unique:true},{name:"unique_index"})
+//showing the indexes in the persons colection using the getindexes()
+db.person.getIndexes()
+
+//using the explain method for person collection for find method as
+db.person.explain().find({})
+//with executionStats
+db.person.explain("executionStats").find({})
+//with executionStats
+db.person.explain("executionStats").find({index:5})
+//we can also use the aggregate method also
+db.person.explain().aggregate([
+    {$match:{index:10}}
+])
+//we can also use the aggregate method also
+db.person.explain("executionStats").aggregate([
+    {$match:{index:11}}
+])
+//$regex with explain method with the indexes
+//fetching the indexes present
+db.person.getIndexes()
+//fetching all the data as
+db.person.find({})
+//here we are using the $regex of the name field as
+db.person.find({name:{$regex:"aurelia",$options:"i"}})
+//alternate way 
+db.person.find({name:/aurelia/i})
+//another alternate approach
+db.person.find({name:{$regex:/aurelia/, $options:"i"}})
+//another approach
+db.person.find({name:{$regex:/aurelia/i}})
+
+//we can use $regex with the explain to see the result as 
+//here name is the index field
+db.person.find({name:{$regex:"aurelia", $options:"i"}}).explain()
+//we can also use it as 
+db.person.find({name:{$regex:"aurelia", $options:"i"}}).explain("executionStats")
+
+//  "indexBounds": {
+//             "name": [
+//               "[/aurelia/i, /aurelia/i]", //expression
+//               "({}, \"\"]" //each key
+//             ]
+//           }
