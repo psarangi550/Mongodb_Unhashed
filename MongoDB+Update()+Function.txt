@@ -1,0 +1,205 @@
+
+========================MongoDB UPDATE() Function=======================================
+
+
+db.empdept.insertMany([{_id : 1,
+                       dname : "research",
+                       loc : "new york",
+                       phone : ["+1 571 446 9580", "+1 368 921 7534", "+1 132 860 0234"],
+                       employees : [{name : "Peter",
+                                     job : "clerk",
+                                     salary : {basic : 900,
+                                               dapct : 70,
+                                               travel : 250,
+                                               health : 300}
+                                     },
+                                     {name : "Miller",
+                                      job : "analyst",
+                                      salary : {basic : 2500,
+                                                dapct : 85,
+                                                health : 400,
+                                                overtime : 500,
+                                                house : 800}   
+                                     },
+                                     {name : "King",
+                                      job : "manager",
+                                      salary : {basic : 3000,
+                                                dapct : 90,
+                                                travel : 850,
+                                                health : 500,
+                                                house : 900}
+                                      }
+                        ]},
+
+                        {_id : 2,
+                         dname : "accounts",
+                         loc : "boston",
+                         phone : ["+1 201 203 7332"],
+                         employees : [{name : "Smith",
+                                       job : "clerk",
+                                       salary : {basic : 900,
+                                       dapct : 70,
+                                       travel : 200,
+                                       health : 400}
+                                      },
+                                      {name : "Ford",
+                                       job : "manager",
+                                       salary : {basic : 3000,
+                                                 dapct : 90,
+                                                 travel : 750,
+                                                 health : 400,
+                                                 house : 800}
+                                      },
+                                      {name : "Jones",
+                                       job : "clerk",
+                                       salary : {basic : 800,
+                                                 dapct : 70,
+                                                 travel : 150,
+                                                 health : 300}
+                                      }
+                         ]},
+                         
+                         {_id : 3,
+                          dname : "sales",
+                          loc : "chicago",
+                          phone : ["+1 217 778 2876", "+1 435 657 8124"],
+                          employees : [{name : "Turner",
+                                        job : "salesman",
+                                        salary : {basic : 1000,
+                                                  dapct : 60,
+                                                  travel : 500,
+                                                  health : 400,
+                                                  comm : 200}
+                                       },
+                                       {name : "Allen",
+                                        job : "manager",
+                                        salary : {basic : 3000,
+                                                  dapct : 90,
+                                                  travel : 850,
+                                                  health : 500,
+                                                  house : 900}
+                                       }
+                         ]}
+])
+
+
+Example statements :
+=========================================================================================
+
+Incrementing and setting values of fields in array of nested documents
+-----------------------------------------------------------------------------------------
+1. Prob : increment the basic salary of clerks by 100 and also update their job as UDC
+
+db.empdept.update({}, 
+                 {$inc : {"employees.$[a].salary.basic" : 100},
+                  $set : {"employees.$[b].job" : "UDC"}}, 
+                 {multi : true, 
+                  arrayFilters : [{"a.job" : "clerk"}, {"b.job" : "clerk"}]})
+
+$inc = operator for incrementing value, $set for setting a value, $[<identifier>] operator
+called "filtered positional operator" used for identifying the array element to apply update
+
+Inserting new field in nested document if does not exist or update to new value if exists
+-----------------------------------------------------------------------------------------
+2. Prob : Apply house allowance to UDC with value 300 or update if already eligible
+
+db.empdept.update({}, {$set : {"employees.$[a].salary.house" : 300}}, 
+                  {multi : true, arrayFilters : [{"a.job" : "UDC"}]})
+
+$set operator not only set the new value to existing field but also adds field if field
+does not exist (for field of document in a nested array of documents)
+
+
+Inserting new field in document if does not exist or update to new value if exists
+------------------------------------------------------------------------------------------
+3. Prob : change the fax number of accounts department or create new if not already exist
+
+db.empdept.update({dname : "accounts"}, {$set : {fax : "+1 657 923 1537"}})
+
+
+Adding a new document to an array of nested documents
+------------------------------------------------------------------------------------------
+4. Prob : Add a new employee in sales department
+
+db.empdept.update({dname : "sales"}, {$push : {employees : {name : "Diana",
+                                                            job : "clerk",
+                                                            salary : {basic : 750,
+                                                                      dapct : 80,
+                                                                      health : 300
+                                                                      }
+                                                            }
+                                              }
+                                     }
+                   )
+
+$push operator is used to add an element to array including a document to an array of
+nested documents
+
+
+Deleting a docuement from an array of nested documents
+------------------------------------------------------------------------------------------
+5. Prob : Delete all employees named ford if exists in any department
+
+db.empdept.update({}, {$pull : {employees : {name : "Ford"}}}, {multi : true})
+
+$pull operator is used to delete a document from an array of nested documents. Even used 
+for deleting a value from an array field
+
+
+Removing a field from document of array of nested documents
+------------------------------------------------------------------------------------------
+6. Prob : withdraw the health allowance from all the UDC
+
+db.empdept.update({}, {$unset : {"employees.$[a].salary.health" : ""}}, 
+                      {multi : true, arrayFilters : [{"a.job" : "UDC"}]})
+
+$unset operator drops the designated field from a document or an array of nested documents
+
+
+Adding a single value to the array field
+-----------------------------------------------------------------------------------------
+7. Prob : Add a new phone number to the sales department
+
+db.empdept.update({dname : "sales"}, {$addToSet : {phone : "+1 529 840 1234"}})
+
+$addToSet operator is used to add a single element to the array field
+
+
+Adding multiple values to the array field
+-----------------------------------------------------------------------------------------
+8. Prob : Add two new phone numbers to the accounts department
+
+db.empdept.update({dname : "accounts"}, 
+                  {$addToSet : {phone : {$each : ["+1 760 654 1421", "+1 861 629 9830"]}}})
+
+$each operator has to be used to add multiple elements to an array field
+
+
+Deleting first or last value from an array field
+----------------------------------------------------------------------------------------
+9. Prob : remove the last phone number from phones of research department
+
+db.empdept.update({dname : "research"}, {$pop : {phone : 1}})
+
+
+Deleting an element from an array field by specifying a value
+----------------------------------------------------------------------------------------
+10. Prob : Delete phone number +1 571 446 9580 from research department
+
+db.empdept.update({dname : "research"}, {$pull : {phone : "+1 571 446 9580"}})
+
+$pull operator can be used to remove an (one single) element from an array by 
+specifying a value, it canalso be used to delete a document from 
+an array of nested documents
+
+
+Deleting multiple elements from an array field by specifying values
+----------------------------------------------------------------------------------------
+11. Prob : Delete given two phone numbers of accounts department
+
+db.empdept.update({dname : "accounts"}, 
+                  {$pullAll : {phone : ["+1 201 203 7332", "+1 861 629 9830"]}})
+
+$pullAll operator is used to remove multiple elements from an array. The values to be
+removed are passed as an array.
+
