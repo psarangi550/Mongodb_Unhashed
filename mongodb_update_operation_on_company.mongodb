@@ -1,0 +1,417 @@
+use company //switching the company
+show collections //displaying all the availeble collection
+//inserting mul;tiple documents into the collection 
+db.empdept.insertMany([{_id : 1,
+                       dname : "research",
+                       loc : "new york",
+                       phone : ["+1 571 446 9580", "+1 368 921 7534", "+1 132 860 0234"],
+                       employees : [{name : "Peter",
+                                     job : "clerk",
+                                     salary : {basic : 900,
+                                               dapct : 70,
+                                               travel : 250,
+                                               health : 300}
+                                     },
+                                     {name : "Miller",
+                                      job : "analyst",
+                                      salary : {basic : 2500,
+                                                dapct : 85,
+                                                health : 400,
+                                                overtime : 500,
+                                                house : 800}   
+                                     },
+                                     {name : "King",
+                                      job : "manager",
+                                      salary : {basic : 3000,
+                                                dapct : 90,
+                                                travel : 850,
+                                                health : 500,
+                                                house : 900}
+                                      }
+                        ]},
+
+                        {_id : 2,
+                         dname : "accounts",
+                         loc : "boston",
+                         phone : ["+1 201 203 7332"],
+                         employees : [{name : "Smith",
+                                       job : "clerk",
+                                       salary : {basic : 900,
+                                       dapct : 70,
+                                       travel : 200,
+                                       health : 400}
+                                      },
+                                      {name : "Ford",
+                                       job : "manager",
+                                       salary : {basic : 3000,
+                                                 dapct : 90,
+                                                 travel : 750,
+                                                 health : 400,
+                                                 house : 800}
+                                      },
+                                      {name : "Jones",
+                                       job : "clerk",
+                                       salary : {basic : 800,
+                                                 dapct : 70,
+                                                 travel : 150,
+                                                 health : 300}
+                                      }
+                         ]},
+                         
+                         {_id : 3,
+                          dname : "sales",
+                          loc : "chicago",
+                          phone : ["+1 217 778 2876", "+1 435 657 8124"],
+                          employees : [{name : "Turner",
+                                        job : "salesman",
+                                        salary : {basic : 1000,
+                                                  dapct : 60,
+                                                  travel : 500,
+                                                  health : 400,
+                                                  comm : 200}
+                                       },
+                                       {name : "Allen",
+                                        job : "manager",
+                                        salary : {basic : 3000,
+                                                  dapct : 90,
+                                                  travel : 850,
+                                                  health : 500,
+                                                  house : 900}
+                                       }
+                         ]}
+])
+//fetching the documents details 
+db.empdept.find()
+db.empdept.find({"employees.job":"UDC"}).count()
+//here fetching the update commands
+db.getCollection("empdept").update(
+    //here the query to fetch the details
+    {},//here it will fetch the entire document
+    //here the update query we want to perform
+    // {$inc:{"employees.$[a].salary.basic":100}},
+    {$set:{"employees.$[b].job":"UDC"}},
+    //here the option but as we are using the updateMany() its not required
+    {multi:true,arrayFilters:[{"b.job":"clerk"}]}
+)
+//fetching the documents details 
+db.empdept.find()
+//now using the $inc to increment the calue as 
+db.getCollection("empdept").update(
+    //here the query to fetch the details
+    {},//here it will fetch the entire document
+    //here the update query we want to perform
+    {$inc:{"employees.$[a].salary.basic":100}},
+    // {$set:{"employees.$[b].job":"UDC"}},
+    //here the option but as we are using the updateMany() its not required
+    {multi:true,arrayFilters:[{"a.job":"UDC"}]}
+)
+//fetching the documents details 
+db.empdept.find({"employees.job":"UDC"})
+db.empdept.find({"employees.job":"UDC"}).count()
+//now we can perform the same with both the value as
+db.getCollection("empdept").update(
+    //here the query to fetch the details
+    {},//here it will fetch the entire document
+    //here the update query we want to perform
+    {
+      $inc:{"employees.$[c].salary.basic":NumberInt(100)},
+      $set:{"employees.$[d].job":"clerk"}
+    },
+    //here the option but as we are using the updateMany() its not required
+    {multi:true,arrayFilters:[{"c.job":"UDC"},{"d.job":"UDC"}]}
+)
+//fetching the documents details 
+db.empdept.find({"employees.job":"clerk"})
+db.empdept.find({"employees.job":"clerk"}).count()
+
+//problem:2
+db.getCollection("empdept").update(
+  //stage-1 query
+  {"employees.job":"clerk"},
+  //update query value
+  {$set:{"employees.$[a].salary.health":300}},
+  //option field
+  {multi:true,arrayFilters:[{"a.job":"clerk"}]}
+)
+
+db.empdept.find({"employees.job":"clerk"})
+db.empdept.find({"employees.job":"clerk"}).count()
+
+
+//problem:-3
+db.getCollection("empdept").update(
+  //stage-1 query
+  {"dname":"accounts"},
+  //update query value
+  {
+    $addToSet:
+    {
+      phone:
+      {
+        $each:["+1 201 203 7332"]
+      }
+    }
+  },
+  //option field
+  {multi:true}
+)
+
+//fetching the value as
+db.empdept.find({"dname":"accounts"})
+
+//problem 4
+
+db.getCollection("empdept").update(
+  //query field
+  {"employees.job":"clerk"},
+  //update field
+  {
+    $inc:{"employees.$.salary.basic":NumberInt(100)},
+    $set:{"employees.$.job":"UDC"}
+  },
+  //option field
+  {multi:true}
+  )
+
+  //fetching the value as
+db.empdept.find({"employees.job":"clerk"})
+
+
+//problem:-5
+db.getCollection("empdept").update(
+  //query to find out the sales dept
+  {dname:"sales"},
+  //updating i.e adding one more employees details
+  {
+    $push: {
+        employees:{
+          name:"rika",
+          job:"manager",
+          salary:{
+              basic: 3000,
+              dapct: 90,
+              travel: 850,
+              health: 500,
+              house: 900
+          }
+        }
+    }
+  },
+  //option field
+  {multi:true}
+)
+
+//fetching the documents
+db.getCollection("empdept").find({})
+
+//problem:-6
+db.getCollection("empdept").update(
+  //query
+  {"employees.name":"Ford"},
+  //update
+  {
+    $unset:{
+      employees:1
+    }
+  },
+  //option
+  {multi:true}
+)
+//problem:-7
+db.getCollection("empdept").update(
+  //query to find out the sales dept
+  {dname:"accounts"},
+  //updating i.e adding one more employees details
+  {
+    $push: {
+        employees:{
+          $each:[{
+                  name : "Smith",
+                  job : "clerk",
+                  salary : {
+                    basic : 900,
+                    dapct : 70,
+                    travel : 200,
+                    health : 400
+                    }
+                  },
+                  {
+                    name : "Ford",
+                    job : "manager",
+                    salary : {
+                      basic : 3000,
+                      dapct : 90,
+                      travel : 750,
+                      health : 400,
+                      house : 800
+                      }
+                  },
+                  {
+                    name : "Jones",
+                    job : "clerk",
+                    salary : {
+                      basic : 800,
+                      dapct : 70,
+                      travel : 150,
+                      health : 300
+                      }
+                  }
+                ]
+        }
+        }
+    },
+  //option field
+  {}
+)
+
+db.getCollection("empdept").find({})
+
+
+//problem:-8
+db.getCollection("empdept").update(
+  //query
+  {},
+  //update
+  {
+    $pull:{employees:{name:"Ford"}
+    }
+  },
+  //option
+  {multi:true}
+  // {arrayFilters:[{"a.name":"Ford"}]}
+)
+
+db.getCollection("empdept").find({})
+
+//using the pull method for the multiple value 
+
+db.getCollection("empdept").update(
+  //query
+  {},
+  //update
+  {
+    $pull:{employees:{name:{$in:["rika","Jones"]}}}
+  },
+  //option
+  {multi:true}
+  // {arrayFilters:[{"a.name":"Ford"}]}
+)
+
+//problem:-9
+
+//we can also use the pullAll method as
+
+db.getCollection("empdept").update(
+  //query
+  {},
+  //update
+  {
+    $pullAll:{phone:["+1 571 446 9580","+1 368 921 7534"]}
+  }
+  //option
+  // {multi:true}
+  // {arrayFilters:[{"a.name":"Ford"}]}
+)
+
+
+db.getCollection("empdept").find({"employees.name":{$in:["rika","Jones"]}})
+
+
+//problem:10
+
+db.getCollection("empdept").update(
+  //query
+  {dname:"accounts"},
+  //update
+  {$set:{faxnumber:"+1 657 923 1537"}},
+  //option
+  {multi:true}
+)
+
+db.getCollection("empdept").find({})
+
+//problem:-11
+db.getCollection("empdept").update(
+  //query
+  {"employees.job":"clerk"},
+  //update query
+  {
+    $unset:{
+      "employees.$.salary.health":1
+    }
+  },
+  //option field
+  {multi:true}
+)
+
+//problem:12
+db.getCollection("empdept").update(
+  //query
+  {"employees.job":"UDC"},
+  //update query
+  {
+    $pull:{employees:{"salary.health":300}}
+  },
+  //option field
+  {multi:true}
+)
+
+db.getCollection("empdept").find({})
+
+
+//problem:-14
+db.getCollection("empdept").update(
+  //query
+  {dname:"accounts"},
+  //update
+  {
+    $push:{
+      phone:{
+        $each:["+1 217 778 2876","+1 435 657 8124"]
+      }
+    }
+  },
+  //option
+  {multi:true}
+)
+
+db.getCollection("empdept").find({dname:"accounts"})
+
+
+db.getCollection("empdept").find()
+
+//problem:-15
+
+
+db.getCollection("empdept").update(
+  //query
+  {dname:"sales"},
+  //update
+  {
+    $pop:{
+      employees:-1
+    }
+  },
+  //option
+  {multi:true}
+)
+
+db.getCollection("empdept").find({dname:"sales"})
+
+//problem:-16
+db.getCollection("empdept").update(
+  //query
+  {dname:"accounts"},
+  //update
+  {
+    $pullAll:
+    {
+      phone:["+1 571 446 9580"]
+    }
+  },
+  //option
+  {multi:true}
+)
+
+
+db.getCollection("empdept").find({dname:"accounts"})
