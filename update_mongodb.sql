@@ -17,6 +17,7 @@ db.getCollection("empdept").updateMany(
 )
 //fetching the documents after the updates
 db.getCollection("empdept").find()
+//inserting the documents into the collection
 db.empdept.insertMany([{_id : 1,
                        dname : "research",
                        loc : "new york",
