@@ -1,0 +1,42 @@
+
+=======================MongoDB sort() Method==========================================
+
+Generic form of sort statement - 
+db.<collection>.find({<query>}).sort({<sortdoc>})
+
+The find method forms the cursor, extended by sort() method with a dot (.) in between.
+Cursor = collection of documents which is returned by execution of find method which
+         satisfy the conditions in the query
+sortdoc = the document which specifies the sort order of the result set asc/desc
+          It takes the form {<field> : <value>, ...} where field is the key by which to
+          sort and value is either 1 or -1 respectively for ascending or descending
+
+
+Creating collection "invoice" & populating it with sample data
+---------------------------------------------------------------------------------------
+db.createCollection("invoice")
+db.invoice.insertMany([{item : {name : "paper", rate : 20}, qty : 10, amt : 200},
+                       {item : {name : "folder", rate : 25}, qty : 5, amt : 125},
+                       {item : {name : "paper", rate : 18}, qty : 20, amt : 360},
+                       {item : {name : "boxes", rate : 15}, qty : 30, amt : 450},
+                       {item : {name : "folder", rate : 30}, qty : 8, amt : 240},
+                       {item : {name : "boxes", rate : 12}, qty : 10, amt : 120},
+                       {item : {name : "paper", rate : 14}, qty : 40, amt : 560},
+                       {item : {name : "paper", rate : 22}, qty : 12, amt : 264}
+])
+
+
+Sort documents in descending order as per rate
+--------------------------------------------------------------------------------------
+db.invoice.find({"item.name" : "paper"}).sort({"item.rate" : -1})
+
+
+Sort documents in asceding order by item name and within name by desceding order of rate
+---------------------------------------------------------------------------------------
+db.invoice.find().sort({"item.name" : 1, "item.rate" : -1})
+
+
+Sort documents in descending order of the amount of invoice
+---------------------------------------------------------------------------------------
+db.invoice.find().sort({amt : -1})
+

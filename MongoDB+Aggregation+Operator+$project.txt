@@ -1,0 +1,39 @@
+
+
+=============================MongoDB Data Aggregation Operator $project==========================
+
+$project - Is used to limit the fields to be displayed or to rename the  fields, arrange them
+           in a logical sequence for easy readability of data, and also do some transformations.
+           It is same as projection operation that we do by providing list of columns of the table
+           in SQL SELECT statement. It is just like the field-limiting arguments that can be set on
+           mongoDB query function find(), that we have already studied, but to be used with 
+           aggregate() function.
+
+
+Display full names of the students along with their respective charges they pay as fee
+--------------------------------------------------------------------------------------------------
+db.students.aggregate([{$project : {_id : 0,
+                                    fullName : {$concat : ["$name.first", " ", "$name.last"]},
+                                    charges : 1
+                                    }}])
+
+
+To display charges as fee and after full name of the students for easy readability
+--------------------------------------------------------------------------------------------------
+db.students.aggregate([{$project : {_id : 0,
+                                    fullName : {$concat : ["$name.first", " ", "$name.last"]},
+                                    fee : "$charges"
+                                    }}])
+
+
+To display full names in upper case
+--------------------------------------------------------------------------------------------------
+db.students.aggregate([{$project : {_id : 0,
+                                    fullName : {$concat : [{$toUpper : "$name.first"}, 
+                                                           " ", 
+                                                           {$toUpper : "$name.last"}]},
+                                    fee : "$charges"
+                                    }}])
+
+
+

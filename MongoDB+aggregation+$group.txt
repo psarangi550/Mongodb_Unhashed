@@ -1,0 +1,34 @@
+
+===============================MongoDB Aggregation $group==========================================
+
+$group - This aggregation accumulator operator groups documents together so that you can create
+         an aggregation results like - sum, max, min, average, etc. The first is always an
+         _id document that will group all the elements from the previous match stage or  
+         collection, on the basis of a grouping or accumulator field(s). 
+         
+         This is equivalent to the specifying name(s) of columns in GROUP BY clause
+         in traditional SQL based relational databases. For Example - SELECT....GROUP BY col1;
+
+$sum - An accumulator operator to perform summation of the values in the passed field over
+       specified groups (i. e. preceding group stage).
+
+
+Groups formed according to standard of students (but name is _id)
+---------------------------------------------------------------------------------------------------
+db.students.aggregate([{$match : {gender : "F"}}, 
+                       {$group : {_id : "$std"}}])
+
+
+Same groups as above but _id renamed as "standard" for easy identification
+(observe that the field "std" of collection is referenced as "$std")
+--------------------------------------------------------------------------------------------------
+db.students.aggregate([{$match : {gender : "F"}}, 
+                      {$group : {_id : {standard: "$std"}}}])
+
+
+Deriving count of standard wise female students using $sum : 1 expression
+(iteratively increments the count by 1 for each female student per standard)
+--------------------------------------------------------------------------------------------------
+db.students.aggregate([{$match : {gender : "F"}}, 
+                       {$group : {_id : {standard: "$std"}, 
+                                 count : {$sum : 1}}}])
