@@ -95,10 +95,13 @@ var my_map=function(){
     //emit() will return the key value pair of group by std and their charges as array 
     emit(this.std,this.charges)
   }
+//1st approach:-
+//----------------------
 // var my_red=function(key,value){
 //   return Array.sum(value)
 // }
-//we can also use it as 
+//we can also use it as approach:-2
+//-----------------------------------------
 // var my_new_red=function(key,value){
 //   return value.reduce(
 //     function(a,b){
@@ -107,6 +110,8 @@ var my_map=function(){
 //   )
 // }
 //another alternate way
+//approach:-3
+//-----------------------------------
 var my_red_count = function(key, value) {
      var sum = 0;
      value.forEach(function(x) {
@@ -151,4 +156,50 @@ db.students.mapReduce(
     query:{gender:"F"},
     out:{inline:1}
   }
+)
+
+//we can also use our own function to define the average in the reduce funection ascending
+
+var stu_map=function(){
+    emit(this.std,this.charges)
+}
+var my_stu_count_red = function(key,value) {
+     var sum = value.reduce(
+         function(x, y) {
+             return x + y
+         }, 0)
+     var avg = (sum / value.length);
+     return avg
+}
+
+db.students.mapReduce(
+    stu_map,
+    my_stu_count_red,
+    {
+        query:{gender:"F"},
+        out:{inline:1}
+    }
+)
+
+//we can use alternatively as below function
+var stu_map=function(){
+    emit(this.std,this.charges)
+}
+var my_stu_count = function(key,value) {
+     var sum = 0
+     value.forEach(
+         function(x) {
+             sum = sum + x
+         }
+     )
+     var avg = sum / value.length
+     return avg;
+ }
+ db.students.mapReduce(
+    stu_map,
+    my_stu_count,
+    {
+        query:{gender:"F"},
+        out:{inline:1}
+    }
 )
