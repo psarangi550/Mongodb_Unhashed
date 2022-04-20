@@ -1,0 +1,154 @@
+//using the database as school
+use ("school")
+//displaying all the avaible collections
+show collections
+//creating the collection students
+db.createCollection("students")
+//fetching the database name
+db
+//adding the documents to the collection
+//creating the variable a for adding the array of documents
+let a = [{rollNo : 51, gender : "F", std : 5, games : ["baseball", "skiing", "chess"], charges : 25,
+      name : {first : "julia",
+              last : "roberts"
+             }
+     },
+     {rollNo : 63, gender : "M", std : 6, games : ["cricket", "skiing"], charges : 35,
+      name : {first : "donald",
+              last : "trump"
+             }
+     },
+     {rollNo : 55, gender : "M", std : 5, games : ["skiing", "football"], charges : 20,
+      name : {first : "boris",
+              last : "baker"
+             }
+     },
+     {rollNo : 53, gender : "F", std : 5, games : ["baseball", "volleyball"], charges : 25,
+      name : {first : "dolly",
+              last : "parton"
+             }
+     },
+     {rollNo : 61, gender : "F", std : 6, games : ["skiing", "handball"], charges : 30,
+      name : {first : "diana",
+              last : "spencer"
+             }
+     },
+     {rollNo : 62, gender : "F", std : 6, games : ["skiing", "carrom"], charges : 35,
+      name : {first : "martina",
+              last : "navratilova"
+             }
+     },
+     {rollNo : 52, gender : "M", std : 5, games : ["baseball", "hockey"], charges : 20,
+      name : {first : "george",
+              last : "bush"
+             }
+     },
+     {rollNo : 65, gender : "M", std : 6, games : ["handball", "skiing", "chess"], charges : 35,
+      name : {first : "barack",
+              last : "obama"
+             }
+     },
+     {rollNo : 54, gender : "F", std : 5, games : ["baseball", "skiing", "chess"], charges : 25,
+      name : {first : "ivanka",
+              last : "trump"
+             }
+     },
+     {rollNo : 64, gender : "M", std : 6, games : ["handball", "chess"], charges : 35,
+      name : {first : "bill",
+              last : "clinton"
+             }
+     },
+     {rollNo : 71, gender : "F", std : 7, games : ["tennis", "skiing"], charges : 40,
+      name : {first : "hillary",
+              last : "clinton"
+             }
+     },
+     {rollNo : 57, gender : "F", std : 5, games : ["baseball", "skiing"], charges : 25,
+      name : {first : "martina",
+              last : "hingis"
+             }
+     },
+     {rollNo : 74, gender : "M", std : 7, games : ["baseball", "skiing"], charges : 35,
+      name : {first : "oprah",
+              last : "winfrey"
+             }
+     },
+     {rollNo : 58, gender : "M", std : 5, games : ["baseball", "chess"], charges : 20,
+      name : {first : "peter",
+              last : "anderson"
+             }
+     },
+     {rollNo : 73, gender : "F", std : 7, games : ["tennis", "skiing", "football"], charges : 25,
+      name : {first : "rebecca",
+              last : "mark"
+             }
+     },
+]
+//inserting the variable 
+db.getCollection("students").insert(a)
+
+)
+//fetching the documents
+db.students.find()
+//creating the variable for the map as
+var my_map=function(){
+    //emit() will return the key value pair of group by std and their charges as array 
+    emit(this.std,this.charges)
+  }
+// var my_red=function(key,value){
+//   return Array.sum(value)
+// }
+//we can also use it as 
+// var my_new_red=function(key,value){
+//   return value.reduce(
+//     function(a,b){
+//       return (a+b);
+//     }
+//   )
+// }
+//another alternate way
+var my_red_count = function(key, value) {
+     var sum = 0;
+     value.forEach(function(x) {
+             sum += 1;
+         })
+         // console.log(my_red_count);
+         //  console.log(sum)
+     return sum
+}
+
+// print(my_red_count)
+
+//now using the map reduce as below
+db.students.mapReduce(
+  my_map,
+  my_red_count
+  // my_red,
+  // my_new_red,
+  {
+    // query:{gender:"F"},
+    out:{inline:1}
+  }
+
+)
+
+var my_map=function(){
+    emit(this.std,this.charges)
+}
+var my_red_count = function(key, value) {
+     var sum = 0;
+     value.forEach(function(x) {
+             sum += 1;
+         })
+         // console.log(my_red_count);
+         //  console.log(sum)
+     return sum
+}
+db.students.mapReduce(
+  my_map,
+  my_red_count,
+  {
+    query:{gender:"F"},
+    out:{inline:1}
+  }
+)
